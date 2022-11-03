@@ -2,6 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:uas_2020130002/user/appuser.dart';
 import 'package:uas_2020130002/user/homelibrary.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 void main() {
   runApp(MyApp());
@@ -39,7 +41,7 @@ class _Login extends State<Login> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.only(top: 60.0),
+                padding: const EdgeInsets.only(top: 120.0),
                 child: Center(
                   child: Container(
                     width: 200,
@@ -98,17 +100,18 @@ class _Login extends State<Login> {
                     color: Colors.blue, borderRadius: BorderRadius.circular(20)),
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.push(
-                        context, MaterialPageRoute(builder: (context){
-                      // if(_keyform.currentState!.validate()){
-                      //   ScaffoldMessenger.of(context).showSnackBar(const
-                      //   SnackBar(content: Text("Gagal Login....")));
-                      // }else
-                      if (user.text == "admin" && pass.text == "admin") {
+                    if (user.text == "admin" && pass.text == "admin") {
+                      Navigator.push(
+                          context, MaterialPageRoute(builder: (context){
+                        // if(_keyform.currentState!.validate()){
+                        //   ScaffoldMessenger.of(context).showSnackBar(const
+                        //   SnackBar(content: Text("Gagal Login....")));
+                        // }else
+
                         return AppUser();
-                      }
-                      return AppUser();
-                    }));
+                      }));
+                    }
+
                   },
                   child: Text(
                     'LOGIN',
@@ -131,13 +134,11 @@ class _Login extends State<Login> {
     );
   }
 
-  //FirebaeAuth _auth = FirebaseAuth.instance;
-  void loginUser() async {
-    showDialog(context: context, builder: (context){
-      return AlertDialog(content: Text("Mencoba Masuk, Mohon Tunggu......"),);
-    });
-    Firebase firebaseAnggota;
+  void validateLogin(){
+    if(_keyform.currentState!.validate()){
+      FirebaseFirestore anggota = FirebaseFirestore.instance;
 
+    }
   }
 }
 
