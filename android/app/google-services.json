@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "118477192298",
+    "project_id": "m-library-stmik-likmi",
+    "storage_bucket": "m-library-stmik-likmi.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:118477192298:android:959e34bb9b8ffaf2bf9e13",
+        "android_client_info": {
+          "package_name": "com.example.uas_2020130002"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "118477192298-6i5hlosghe2ed27f9ehtapqb562rlu5q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWbiykOtH6CS-ZTJfT3WA8oEt0Y26bUx0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "118477192298-6i5hlosghe2ed27f9ehtapqb562rlu5q.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "118477192298-4t2f840bgahfnp6g5bqe98dcnj8oh51d.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.uas2020130002"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
