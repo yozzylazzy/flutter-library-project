@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uas_2020130002/controller/anggotaController.dart';
 import 'package:uas_2020130002/user/user.dart';
 
 class HomeLibrary extends StatelessWidget {
@@ -12,6 +13,7 @@ class HomeLibrary extends StatelessWidget {
           padding: EdgeInsets.only(left: 20,right: 20, top: 10, bottom: 10),
           child: Column(
             children: [
+              GetAnggota('rMx7U3gbxPWvHvGKJCXU'),
               Container(
                 padding: EdgeInsets.only(top: 10, bottom: 10),
                 height: 200,

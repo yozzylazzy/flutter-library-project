@@ -28,6 +28,7 @@ class Login extends StatefulWidget {
 
 class _Login extends State<Login> {
   final GlobalKey<FormState> _keyform = GlobalKey<FormState>();
+  FirebaseFirestore dbanggota = FirebaseFirestore.instance;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -135,8 +136,9 @@ class _Login extends State<Login> {
   }
 
   void validateLogin(){
+
     if(_keyform.currentState!.validate()){
-      FirebaseFirestore anggota = FirebaseFirestore.instance;
+     FirebaseFirestore anggota = FirebaseFirestore.instance;
 
     }
   }
