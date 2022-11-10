@@ -38,9 +38,9 @@ class _AppUserState extends State<AppUser> {
             controller: pageController,
             children: [
               HomeLibrary(useruid2),
-              WishlistBook(),
-              HistoryPage(),
-              Home()
+              WishlistBook(useruid2),
+              HistoryPage(useruid2),
+              Home(useruid2)
             ],
         physics: NeverScrollableScrollPhysics(),
       ),

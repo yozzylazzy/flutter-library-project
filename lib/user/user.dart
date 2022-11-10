@@ -36,13 +36,18 @@
 // }
 //
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:uas_2020130002/controller/anggotaController.dart';
 
-void main() => runApp(MaterialApp(
-  home: Home(),
-));
+// void main() => runApp(MaterialApp(
+//   home: Home(),
+// ));
 
 class Home extends StatelessWidget {
+  Home(this.useruid);
+  final String useruid;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -69,7 +74,7 @@ class Home extends StatelessWidget {
             ),
             SizedBox(height: 10),
             Text(
-              'Keith Chasen',
+              'Loading...',
               style: TextStyle(
                   color: Colors.amberAccent[200],
                   letterSpacing: 2,
@@ -79,7 +84,7 @@ class Home extends StatelessWidget {
             ),
             SizedBox(height: 30),
             Text(
-              'Level',
+              'Jenjang',
               style: TextStyle(
                   color: Colors.grey,
                   letterSpacing: 2
@@ -87,7 +92,7 @@ class Home extends StatelessWidget {
             ),
             SizedBox(height: 10),
             Text(
-              '8',
+              'Loading...',
               style: TextStyle(
                   color: Colors.amberAccent[200],
                   letterSpacing: 2,
@@ -115,8 +120,35 @@ class Home extends StatelessWidget {
                 ),
               ],
             ),
+            FutureBuilder(
+              future:
+            FirebaseFirestore.instance.collection('anggota').
+            doc(useruid).get(),
+            builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot){
+              if (snapshot.connectionState == ConnectionState.done) {
+                Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
+                return Text("${data['nama']}");
+              }
+              return Text("loading");
+            },),
+            FutureBuilder(
+              future:
+              FirebaseFirestore.instance.collection('anggota').
+              doc(useruid).get(),
+              builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot){
+                if (snapshot.connectionState == ConnectionState.done) {
+                  Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
+                  return Text("${data['jenjang']}");
+                }
+                return Text("loading");
+              },),
           ],
         ),
     );
   }
+
+  void loadUserData(String uid) async{
+     GetAnggota(uid);
+  }
+
 }

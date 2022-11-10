@@ -3,7 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class WishlistBook extends StatelessWidget {
-  const WishlistBook({Key? key}) : super(key: key);
+  // const WishlistBook({Key? key}) : super(key: key);
+  WishlistBook(this.useruid);
+  final String useruid;
 
   @override
   Widget build(BuildContext context) {

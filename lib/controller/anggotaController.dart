@@ -67,53 +67,27 @@ class GetAnggota extends StatelessWidget {
     //       return Text("loading");
     //     });
 
-void loaduser(String a, String b) async {
-      CollectionReference anggota = FirebaseFirestore.instance.collection("anggota");
-      Query uservalidation = anggota.where("npm", isEqualTo: a);
-      Query loginvalidation = anggota.where("password", isEqualTo: b);
+void onSearch(String text) async {
+  final String _collection = 'anggota';
+  final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
 
-      // 1. Create a reference to the collection
-      // CollectionReference s = FirebaseFirestore.instance
-      //     .collection("Users")
-      //     .doc("list_instructors")
-      //     .collection("Instructor");
-      // 2. Create a query for the user with the given email address
-      //       Query query = uservalidation;
-      // 3. Execute the query to get the documents
-      QuerySnapshot querySnapshot = await uservalidation.get();
+  getData() async {
+    return await _fireStore.collection(_collection).get();
+  }
 
-      // 4. Loop over the resulting document(s), since there may be multiple
-      querySnapshot.docs.forEach((doc) {
-        // 5. Update the 'Full Name' field in this document
-        Map<String, dynamic> data = querySnapshot.docs! as Map<String, dynamic>;
-        //return Text("Selamat Datang, ${data['nama']}");
-        print("tes");
-        print("${data['npm']}");
-        //doc.reference.update({'Full Name': npm});
-      });
+  //Ini sudah jalan dan berhasil untuk load user
+  getData().then((val){
+    if(val.docs.length > 0){
+      print(val.docs[0].get("npm"));
+      print(val.docs[0].get("nama"));
+      print(val.docs[0].get("email"));
+      print(val.docs[0].get("password"));
+    }
+    else{
+      print("Not Found");
+    }
+  });
 }
-
-// void onSearch(String text) async {
-//   final String _collection = 'anggota';
-//   final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
-//
-//   getData() async {
-//     return await _fireStore.collection(_collection).get();
-//   }
-//
-//   //Ini sudah jalan dan berhasil untuk load user
-//   getData().then((val){
-//     if(val.docs.length > 0){
-//       print(val.docs[0].get("npm"));
-//       print(val.docs[0].get("nama"));
-//       print(val.docs[0].get("email"));
-//       print(val.docs[0].get("password"));
-//     }
-//     else{
-//       print("Not Found");
-//     }
-//   });
-// }
 
 bool login(String user, String pass) {
   bool valid = false;
