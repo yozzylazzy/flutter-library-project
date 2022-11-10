@@ -3,8 +3,9 @@ import 'package:uas_2020130002/controller/anggotaController.dart';
 import 'package:uas_2020130002/user/user.dart';
 
 class HomeLibrary extends StatelessWidget {
-  const HomeLibrary({Key? key}) : super(key: key);
-
+  // const HomeLibrary({Key? key}) : super(key: key);
+  HomeLibrary(this.useruid);
+  final String useruid;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -13,7 +14,7 @@ class HomeLibrary extends StatelessWidget {
           padding: EdgeInsets.only(left: 20,right: 20, top: 10, bottom: 10),
           child: Column(
             children: [
-              GetAnggota('rMx7U3gbxPWvHvGKJCXU'),
+              GetAnggota(useruid),
               Container(
                 padding: EdgeInsets.only(top: 10, bottom: 10),
                 height: 200,
@@ -64,11 +65,38 @@ class HomeLibrary extends StatelessWidget {
                 ),
               ), //Status Buku Pada Perpustakaan
               SizedBox(height: 20,),
-              
+               bookCard(),
             ],
           ),
         ),
       ),
     );
   }
+
+  Widget bookCard(){
+    return Row(
+      children: [
+        Expanded(
+        child: SizedBox(
+          height: 300,
+          child: new GridView.builder(
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
+              itemCount: 6,
+              gridDelegate:
+              SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2
+                  , childAspectRatio: 0.7,
+                  mainAxisSpacing: 10,
+                  crossAxisSpacing: 10), itemBuilder: (context, index){
+            return Card(
+              child: Text("Ini Buku ke- ${index}"),
+            );
+          }
+          ),
+        ),
+      )
+      ]
+    );
+  }
+
 }

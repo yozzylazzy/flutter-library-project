@@ -1,9 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:uas_2020130002/controller/anggotaController.dart';
 import 'package:uas_2020130002/user/appuser.dart';
 import 'package:uas_2020130002/user/homelibrary.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:developer';
 
 void main() {
   runApp(MyApp());
@@ -87,7 +89,8 @@ class _Login extends State<Login> {
               SizedBox(height: 20,),
               TextButton(
                 onPressed: (){
-                  //TODO FORGOT PASSWORD SCREEN GOES HERE
+                  //onSearch("2022130098");
+                  print(login(user.text,pass.text));
                 },
                 child: Text(
                   'Forgot Password',
@@ -101,18 +104,21 @@ class _Login extends State<Login> {
                     color: Colors.blue, borderRadius: BorderRadius.circular(20)),
                 child: ElevatedButton(
                   onPressed: () {
-                    if (user.text == "admin" && pass.text == "admin") {
-                      Navigator.push(
-                          context, MaterialPageRoute(builder: (context){
-                        // if(_keyform.currentState!.validate()){
-                        //   ScaffoldMessenger.of(context).showSnackBar(const
-                        //   SnackBar(content: Text("Gagal Login....")));
-                        // }else
-
-                        return AppUser();
-                      }));
-                    }
-
+                    print("keypressed");
+                    //onSearch(user.text);
+                    //login(user.text,pass.text);
+                    validateLogin(user.text,pass.text);
+                    // if (user.text == "admin" && pass.text == "admin") {
+                    //   Navigator.push(
+                    //       context, MaterialPageRoute(builder: (context){
+                    //     // if(_keyform.currentState!.validate()){
+                    //     //   ScaffoldMessenger.of(context).showSnackBar(const
+                    //     //   SnackBar(content: Text("Gagal Login....")));
+                    //     // }else
+                    //     return AppUser();
+                    //   }
+                    //   ));
+                    // }
                   },
                   child: Text(
                     'LOGIN',
@@ -135,12 +141,35 @@ class _Login extends State<Login> {
     );
   }
 
-  void validateLogin(){
-
-    if(_keyform.currentState!.validate()){
-     FirebaseFirestore anggota = FirebaseFirestore.instance;
-
+  void validateLogin(String user, String pass) async {
+    bool valid = false;
+    final _auth = FirebaseAuth.instance;
+    try {
+        String updateuser = user + "@co.id";
+        //print(updateuser);
+        UserCredential userCredential = await FirebaseAuth.instance
+            .signInWithEmailAndPassword(
+            email: updateuser,
+            password: pass
+        );
+        if (updateuser != null) {
+          print("success");
+          Navigator.push(
+                  context, MaterialPageRoute(builder: (context) {
+                  return AppUser(userCredential.user!.uid.toString());
+                }),);
+        }
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'user-not-found') {
+          print('No user found for that email.');
+          ScaffoldMessenger.of(context).showSnackBar(const
+                SnackBar(content: Text("Pengguna Tidak Ditemukan")));
+        } else if (e.code == 'wrong-password') {
+          print('Wrong password provided for that user.');
+          ScaffoldMessenger.of(context).showSnackBar(const
+          SnackBar(content: Text("Password Salah...")));
+        }
+      }
     }
-  }
 }
 

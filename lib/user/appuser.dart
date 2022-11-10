@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:uas_2020130002/user/history.dart';
+import 'package:uas_2020130002/user/peminjaman.dart';
 import 'package:uas_2020130002/user/user.dart';
 import 'homelibrary.dart';
 
 class AppUser extends StatefulWidget {
-  const AppUser({Key? key}) : super(key: key);
+  // const AppUser({Key? key}) : super(key: key);
+  AppUser(this.useruid);
+  final String useruid;
 
   @override
-  State<AppUser> createState() => _AppUserState();
+  State<AppUser> createState() => _AppUserState(useruid);
 }
 
 class _AppUserState extends State<AppUser> {
+  _AppUserState(this.useruid2);
+  final String useruid2;
   bool auth = false;
   int pageIndex = 0;
   PageController pageController = PageController(
@@ -29,14 +34,15 @@ class _AppUserState extends State<AppUser> {
 
       ),
       body: PageView(
+        scrollDirection: Axis.horizontal,
             controller: pageController,
             children: [
-              HomeLibrary(),
-              Text('Wishlist'),
+              HomeLibrary(useruid2),
+              WishlistBook(),
               HistoryPage(),
-              UserHome()
+              Home()
             ],
-        physics: BouncingScrollPhysics(),
+        physics: NeverScrollableScrollPhysics(),
       ),
     );
   }
