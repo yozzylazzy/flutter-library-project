@@ -29,18 +29,16 @@ class _AppUserState extends State<AppUser> {
         color: Colors.black,
         child: BottomBar(),
       ),
-      floatingActionButton: const FloatingActionButton(onPressed: null),
-      appBar: AppBar(
-
+        appBar: AppBar(
       ),
       body: PageView(
         scrollDirection: Axis.horizontal,
             controller: pageController,
             children: [
-              HomeLibrary(useruid2),
+              Home(useruid2),
               WishlistBook(useruid2),
               HistoryPage(useruid2),
-              Home(useruid2)
+              HomeUser(useruid2)
             ],
         physics: NeverScrollableScrollPhysics(),
       ),

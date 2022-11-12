@@ -40,12 +40,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:uas_2020130002/controller/anggotaController.dart';
 
-// void main() => runApp(MaterialApp(
-//   home: Home(),
-// ));
-
-class Home extends StatelessWidget {
-  Home(this.useruid);
+class HomeUser extends StatelessWidget {
+  HomeUser(this.useruid);
   final String useruid;
 
   @override
@@ -57,7 +53,7 @@ class Home extends StatelessWidget {
           children: <Widget>[
             Center(
               child: CircleAvatar(
-                backgroundImage: AssetImage('images/user.jpg'),
+                backgroundImage: AssetImage('assets/images/user.jpg'),
                 radius: 40,
               ),
             ),
@@ -73,15 +69,33 @@ class Home extends StatelessWidget {
               ),
             ),
             SizedBox(height: 10),
-            Text(
-              'Loading...',
-              style: TextStyle(
-                  color: Colors.amberAccent[200],
-                  letterSpacing: 2,
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold
-              ),
-            ),
+            FutureBuilder(
+              future:
+              FirebaseFirestore.instance.collection('anggota').
+              doc(useruid).get(),
+              builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot){
+                if (snapshot.connectionState == ConnectionState.done) {
+                  Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
+                  return Text(
+                    "${data['nama']}",
+                    style: TextStyle(
+                        color: Colors.amberAccent[200],
+                        letterSpacing: 2,
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold
+                    ),
+                  );
+                }
+                return Text(
+                  'Loading...',
+                  style: TextStyle(
+                      color: Colors.amberAccent[200],
+                      letterSpacing: 2,
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold
+                  ),
+                );
+              },),
             SizedBox(height: 30),
             Text(
               'Jenjang',
@@ -91,15 +105,33 @@ class Home extends StatelessWidget {
               ),
             ),
             SizedBox(height: 10),
-            Text(
-              'Loading...',
-              style: TextStyle(
-                  color: Colors.amberAccent[200],
-                  letterSpacing: 2,
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold
-              ),
-            ),
+            FutureBuilder(
+              future:
+              FirebaseFirestore.instance.collection('anggota').
+              doc(useruid).get(),
+              builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot){
+                if (snapshot.connectionState == ConnectionState.done) {
+                  Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
+                  return Text(
+                    "${data['jenjang']}",
+                    style: TextStyle(
+                        color: Colors.amberAccent[200],
+                        letterSpacing: 2,
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold
+                    ),
+                  );
+                }
+                return Text(
+                  "Loading...",
+                  style: TextStyle(
+                      color: Colors.amberAccent[200],
+                      letterSpacing: 2,
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold
+                  ),
+                );
+              },),
             SizedBox(height: 30),
             Row(
               children: <Widget>[
@@ -111,7 +143,7 @@ class Home extends StatelessWidget {
                   width: 10,
                 ),
                 Text(
-                  'keith@mail.com',
+                  'your@mail.com',
                   style: TextStyle(
                       color: Colors.grey[400],
                       fontSize: 18,
@@ -120,28 +152,6 @@ class Home extends StatelessWidget {
                 ),
               ],
             ),
-            FutureBuilder(
-              future:
-            FirebaseFirestore.instance.collection('anggota').
-            doc(useruid).get(),
-            builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot){
-              if (snapshot.connectionState == ConnectionState.done) {
-                Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
-                return Text("${data['nama']}");
-              }
-              return Text("loading");
-            },),
-            FutureBuilder(
-              future:
-              FirebaseFirestore.instance.collection('anggota').
-              doc(useruid).get(),
-              builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot){
-                if (snapshot.connectionState == ConnectionState.done) {
-                  Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
-                  return Text("${data['jenjang']}");
-                }
-                return Text("loading");
-              },),
           ],
         ),
     );

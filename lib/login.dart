@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:uas_2020130002/admin/appadmin.dart';
 import 'package:uas_2020130002/controller/anggotaController.dart';
 import 'package:uas_2020130002/user/appuser.dart';
 import 'package:uas_2020130002/user/homelibrary.dart';
@@ -33,112 +34,118 @@ class _Login extends State<Login> {
   FirebaseFirestore dbanggota = FirebaseFirestore.instance;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SingleChildScrollView(child:Center(
-        child: Form(
-          key: _keyform,
-          autovalidateMode: AutovalidateMode.onUserInteraction,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(top: 120.0),
-                child: Center(
-                  child: Container(
-                    width: 200,
-                    height: 150,
-                  ),
+    return WillPopScope(
+        child: Scaffold(
+            backgroundColor: Colors.white,
+            body: SingleChildScrollView(child:Center(
+              child: Form(
+                key: _keyform,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(top: 120.0),
+                      child: Center(
+                        child: Container(
+                          width: 200,
+                          height: 150,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 15),
+                      child: TextFormField(
+                        controller: user,
+                        validator: (value){
+                          if(value==null || value==''){
+                            return "Username Tidak Boleh Kosong!";
+                          }
+                        },
+                        readOnly: false,
+                        decoration: InputDecoration(
+                          prefixIcon: Icon(Icons.person),
+                          labelText: 'Username',
+                          hintText: 'Enter Your Username/Email',
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 15.0, right: 15.0, top: 15, bottom: 0),
+                      child: TextFormField(
+                        controller: pass,
+                        validator: (value){
+                          if(value==null||value==''){
+                            return "Password Tidak Boleh Dikosongkan";
+                          }
+                        },
+                        obscureText: true,
+                        decoration: InputDecoration(
+                            prefixIcon: Icon(Icons.lock),
+                            labelText: 'Password',
+                            hintText: 'Enter Your Password'),
+                      ),
+                    ),
+                    SizedBox(height: 20,),
+                    TextButton(
+                      onPressed: (){
+                        //onSearch("2022130098");
+                        print(login(user.text,pass.text));
+                      },
+                      child: Text(
+                        'Forgot Password',
+                        style: TextStyle(color: Colors.blue, fontSize: 15),
+                      ),
+                    ),
+                    Container(
+                      height: 50,
+                      width: 250,
+                      decoration: BoxDecoration(
+                          color: Colors.blue, borderRadius: BorderRadius.circular(20)),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          String admCheck = user.text.toString()+"%@!%";
+                          String passadmCheck = pass.text.toString()+"%@!%";
+                          print("keypressed");
+                          //onSearch(user.text);
+                          //login(user.text,pass.text);
+                          if(_keyform.currentState!.validate()){
+                            if (admCheck == "admin%@!%" && passadmCheck == "admin%@!%") {
+                              Navigator.push(
+                                  context, MaterialPageRoute(builder: (context){
+                                return AppAdmin();
+                              }
+                              ));
+                            } else {
+                              validateLogin(user.text,pass.text);
+                            }
+                          }
+                        },
+                        child: Text(
+                          'LOGIN',
+                          style: TextStyle(color: Colors.white, fontSize: 25),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.deepPurple,
+                          minimumSize: const Size.fromHeight(30),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 130,
+                    ),
+                  ],
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 15),
-                child: TextFormField(
-                  controller: user,
-                  validator: (value){
-                    if(value==null || value==''){
-                      return "Username Tidak Boleh Kosong!";
-                    }
-                  },
-                  readOnly: false,
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.person),
-                    labelText: 'Username',
-                    hintText: 'Enter Your Username/Email',
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(
-                    left: 15.0, right: 15.0, top: 15, bottom: 0),
-                child: TextFormField(
-                  controller: pass,
-                  validator: (value){
-                    if(value==null||value==''){
-                      return "Password Tidak Boleh Dikosongkan";
-                    }
-                  },
-                  obscureText: true,
-                  decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.lock),
-                      labelText: 'Password',
-                      hintText: 'Enter Your Password'),
-                ),
-              ),
-              SizedBox(height: 20,),
-              TextButton(
-                onPressed: (){
-                  //onSearch("2022130098");
-                  print(login(user.text,pass.text));
-                },
-                child: Text(
-                  'Forgot Password',
-                  style: TextStyle(color: Colors.blue, fontSize: 15),
-                ),
-              ),
-              Container(
-                height: 50,
-                width: 250,
-                decoration: BoxDecoration(
-                    color: Colors.blue, borderRadius: BorderRadius.circular(20)),
-                child: ElevatedButton(
-                  onPressed: () {
-                    print("keypressed");
-                    //onSearch(user.text);
-                    //login(user.text,pass.text);
-                    validateLogin(user.text,pass.text);
-                    // if (user.text == "admin" && pass.text == "admin") {
-                    //   Navigator.push(
-                    //       context, MaterialPageRoute(builder: (context){
-                    //     // if(_keyform.currentState!.validate()){
-                    //     //   ScaffoldMessenger.of(context).showSnackBar(const
-                    //     //   SnackBar(content: Text("Gagal Login....")));
-                    //     // }else
-                    //     return AppUser();
-                    //   }
-                    //   ));
-                    // }
-                  },
-                  child: Text(
-                    'LOGIN',
-                    style: TextStyle(color: Colors.white, fontSize: 25),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.black,
-                    minimumSize: const Size.fromHeight(30),
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 130,
-              ),
-            ],
-          ),
+            ),
+            )
         ),
-        ),
-      )
-    );
+        onWillPop: () async {
+             return false;
+           }
+        );
   }
 
   void validateLogin(String user, String pass) async {

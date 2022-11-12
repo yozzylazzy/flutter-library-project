@@ -67,7 +67,7 @@ class GetAnggota extends StatelessWidget {
     //       return Text("loading");
     //     });
 
-void onSearch(String text) async {
+void onSearch() async {
   final String _collection = 'anggota';
   final FirebaseFirestore _fireStore = FirebaseFirestore.instance;
 

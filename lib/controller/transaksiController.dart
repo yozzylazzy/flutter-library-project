@@ -7,9 +7,9 @@ import 'package:flutter/material.dart';
 
 import '../model/bukumodel.dart';
 
-class getBukuAll{
+class _getTransaksiAll{
   final CollectionReference collectionReference =
-  FirebaseFirestore.instance.collection('buku');
+  FirebaseFirestore.instance.collection('transaksi');
 
   Stream<QuerySnapshot> getStream(){
     return collectionReference.snapshots();
