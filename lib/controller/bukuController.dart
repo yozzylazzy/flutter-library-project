@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 
 import '../model/bukumodel.dart';
 
-class getBukuAll{
+class BukuController{
   final CollectionReference collectionReference =
   FirebaseFirestore.instance.collection('buku');
 

@@ -5,28 +5,34 @@ class Buku{
   String title;
   String penulis;
   String jenisbuku;
+  String tahunTerbit;
   int halaman;
+  String? referenceId;
 
-  Buku(this.id,this.title,this.penulis,this.jenisbuku,this.halaman);
+  Buku(this.id,this.title,
+      this.penulis,this.jenisbuku,
+      this.tahunTerbit,this.halaman);
 
   Buku.fromJson(Map<String, dynamic> json):
-      id = json['id'],
-      title = json['title'],
-      penulis = json['penulis'],
-      jenisbuku = json['description'],
+      id = json['IdBuku'],
+      title = json['JudulBuku'],
+      penulis = json['Pengarang'],
+      jenisbuku = json['JenisBuku'],
+      tahunTerbit = json['TahunTerbit'],
       halaman = json['halaman'];
 
   Map<String, dynamic> toJson()=>{
-    'id':id,
-    'title':title,
-    'penulis':penulis,
-    'jenisbuku':jenisbuku,
-    'halaman':halaman
+    'IdBuku': id,
+    'JudulBuku': title,
+    'Pengarang': penulis,
+    'JenisBuku': jenisbuku,
+    'TahunTerbit': tahunTerbit,
+    'halaman': halaman
   };
 
   factory Buku.fromSnapshot(DocumentSnapshot snapshot){
     final newBuku = Buku.fromJson(snapshot.data() as Map<String, dynamic>);
-    newBuku.id = snapshot.reference.id;
+    newBuku.referenceId = snapshot.reference.id;
     return newBuku;
   }
 

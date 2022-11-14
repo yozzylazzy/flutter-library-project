@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:uas_2020130002/controller/bukuController.dart';
 
@@ -10,8 +12,9 @@ class AddBuku extends StatelessWidget {
   final TextEditingController judulBuku = TextEditingController();
   final TextEditingController pengarang = TextEditingController();
   final TextEditingController tahunTerbit = TextEditingController();
+  final TextEditingController halaman = TextEditingController();
 
-  getBukuAll repository = getBukuAll();
+  BukuController repository = BukuController();
   late Buku buku;
 
   @override
@@ -64,25 +67,46 @@ class AddBuku extends StatelessWidget {
                     labelText: "Tahun Terbit",
                   ),
                 ),
+                SizedBox(height: 20,),
+                TextFormField(
+                  controller: halaman,
+                  decoration: InputDecoration(
+                    labelText: "Halaman",
+                  ),
+                ),
                 SizedBox(height: 40,),
                 Center(
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Flexible(child: ElevatedButton(onPressed: (){}, child:
-                      Text("Tambah"),
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.black,
-                          fixedSize: Size(100, 50)
-                      ),)),
+                      Flexible(child: SizedBox(
+                          height: 40,
+                          width: 100,
+                          child: ElevatedButton(onPressed: (){
+                        //Navigator.pop(context);
+                        int halaman = 100;
+                        Navigator.pop(context);
+                        buku = new Buku(inputId.text, judulBuku.text,
+                            pengarang.text, jenisBuku.text,
+                            tahunTerbit.text, halaman);
+                        repository.addBuku(buku);
+                      }, child: Text("Tambah"),
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.black,
+                        ),))),
                       SizedBox(width: 30),
-                      Flexible(child: ElevatedButton(onPressed: (){}, child:
+                      Flexible(child:
+                      SizedBox(
+                          height: 40,
+                          width: 100,
+                          child: ElevatedButton(onPressed: (){}, child:
                       Text("Reset"),
-                      style: ElevatedButton.styleFrom(
+                        style: ElevatedButton.styleFrom(
                           primary: Colors.grey,
-                        fixedSize: Size(100, 50)
-                      ),)),
+                          //fixedSize: Size(100, 50)
+                        ),))
+                      ),
                     ],
                   ),
                 ),
