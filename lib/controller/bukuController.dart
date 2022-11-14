@@ -15,13 +15,13 @@ class BukuController{
     return collectionReference.snapshots();
   }
   void deleteBuku(Buku buku) async{
-    await collectionReference.doc(buku.id).delete();
+    await collectionReference.doc(buku.referenceId).delete();
   }
   Future<DocumentReference> addBuku(Buku buku){
     return collectionReference.add(buku.toJson());
   }
   void updateBuku(Buku buku) async {
-    await collectionReference.doc(buku.id).update(buku.toJson());
+    await collectionReference.doc(buku.referenceId).update(buku.toJson());
   }
 }
 
