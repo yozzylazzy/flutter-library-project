@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:uas_2020130002/admin/addbuku.dart';
+import 'package:uas_2020130002/admin/editbuku.dart';
 import 'package:uas_2020130002/controller/bukuController.dart';
 import 'package:uas_2020130002/model/bukumodel.dart';
 
@@ -62,8 +63,8 @@ class BukuCardList extends StatelessWidget {
             ],
           ),
           onTap: (){
-            // Navigator.push<Widget>(context, MaterialPageRoute(builder:
-            //     (context)=> edit(product: product)));
+            Navigator.push<Widget>(context, MaterialPageRoute(builder:
+                (context)=> EditBuku(buku: buku)));
           },
         ),
       ),
@@ -102,7 +103,6 @@ class _FullBukuListState extends State<FullBukuList> {
   Widget _buildList(BuildContext context, List<DocumentSnapshot>
   snapshot) {
     return SizedBox(
-      height: 500,
       child: ListView(
         padding: EdgeInsets.all(10),
         children: snapshot.map((data) =>

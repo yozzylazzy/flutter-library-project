@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:uas_2020130002/admin/bukulist.dart';
 import 'package:uas_2020130002/controller/anggotaController.dart';
 import 'package:uas_2020130002/user/user.dart';
 import 'package:filter_list/filter_list.dart';
-
+import '../controller/bukuController.dart';
 import '../model/bukumodel.dart';
 
 class Home extends StatelessWidget {
@@ -127,45 +129,10 @@ class _HomeLibraryState extends State<HomeLibrary> {
                 ],
               ),
               SizedBox(height: 20,),
-               bookCard(),
             ],
           ),
         ),
       ),
     );
   }
-
-  Widget bookCard() {
-    return Row(
-        children: [
-          Expanded(
-            child: SizedBox(
-              height: 400,
-              child: new GridView.builder(
-                  scrollDirection: Axis.vertical,
-                  shrinkWrap: true,
-                  itemCount: 6,
-                  gridDelegate:
-                  SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2
-                      , childAspectRatio: 0.7,
-                      mainAxisSpacing: 10,
-                      crossAxisSpacing: 10),
-                  itemBuilder: (context, index) {
-                    return Card(
-                      child: Text("Ini Buku ke- ${index}"),
-                    );
-                  }
-              ),
-            ),
-          )
-        ]
-    );
-  }
 }
-
-
-
-
-
-
-
