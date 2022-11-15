@@ -6,23 +6,26 @@ class Anggota{
   String alamat;
   String jenjang;
   String tglmasuk;
+  String gender;
   String? referenceId;
 
-  Anggota(this.npm, this.nama, this.alamat, this.jenjang, this.tglmasuk);
+  Anggota(this.npm, this.nama, this.alamat, this.jenjang, this.tglmasuk, this.gender);
 
   Anggota.fromJson(Map<String, dynamic> json):
         npm = json['npm'],
         nama = json['nama'],
         alamat = json['alamat'],
         jenjang = json['jenjang'],
-        tglmasuk = json['tglmasuk'];
+        tglmasuk = json['tglmasuk'],
+        gender = json['gender'];
 
   Map<String, dynamic> toJson()=>{
     'npm': npm,
     'nama': nama,
     'alamat': alamat,
     'jenjang': jenjang,
-    'tglmasuk': tglmasuk
+    'tglmasuk': tglmasuk,
+    'gender': gender
   };
 
   factory Anggota.fromSnapshot(DocumentSnapshot snapshot){

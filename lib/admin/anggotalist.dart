@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:uas_2020130002/admin/addanggota.dart';
 import 'package:uas_2020130002/controller/anggotaController.dart';
@@ -54,7 +55,7 @@ class AnggotaCardList extends StatelessWidget {
               Text(anggota.nama),
               Text(anggota.jenjang),
               Spacer(),
-              IconButton(onPressed: (){
+              IconButton(onPressed: () async {
                 repository.deleteAnggota(anggota);
               },
                 icon: Icon(Icons.restore_from_trash_rounded),

@@ -6,9 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:uas_2020130002/controller/anggotaController.dart';
 import 'package:uas_2020130002/model/anggotamodel.dart';
 
-class AddAnggota extends StatelessWidget {
+class AddAnggota extends StatefulWidget {
+  @override
+  State<AddAnggota> createState() => _AddAnggotaState();
+}
+
+class _AddAnggotaState extends State<AddAnggota> {
   //const AddAnggota({Key? key}) : super(key: key);
-  //final TextEditingController email = TextEditingController();
   final TextEditingController password = TextEditingController();
   final TextEditingController passwordre = TextEditingController();
   final TextEditingController npm = TextEditingController();
@@ -16,8 +20,11 @@ class AddAnggota extends StatelessWidget {
   final TextEditingController alamat = TextEditingController();
   final TextEditingController jenjang = TextEditingController();
   final TextEditingController tglmasuk = TextEditingController();
+  String? selectedJenjang;
+  String? _gender;
 
   AnggotaController repository = AnggotaController();
+
   late Anggota anggota;
 
   @override
@@ -72,12 +79,69 @@ class AddAnggota extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 20,),
-                  TextFormField(
-                    controller: jenjang,
-                    decoration: InputDecoration(
-                        labelText: "Jenjang Anggota"
+              Row(
+                children: [
+                  Flexible(
+                    child: RadioListTile(
+                      value: 'Pria',
+                      groupValue: _gender,
+                      onChanged: (String? value){
+                        setState(() {
+                          _gender = value;
+                        });
+                      },
+                      title: const Text("Pria"),
                     ),
                   ),
+                  Flexible(child: RadioListTile(
+                    value: 'Wanita',
+                    groupValue: _gender,
+                    onChanged: (String? value){
+                      setState(() {
+                        _gender=value;
+                      });
+                    },
+                    title: const Text("Wanita"),
+                  )),
+                ],
+              ),
+                  SizedBox(height: 20,),
+                  Row(
+                    children: [
+                      Expanded(child: DropdownButtonFormField<String>(
+                        isExpanded: true,
+                        //controller: ,
+                        validator: (value) => value ==null ? 'Pilih Jenjang Pendidikan' : null,
+                        items: <String>['D3', 'S1', 'S2', 'S3'].map((String value)
+                        {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        onChanged: (value){
+                          setState(() {
+                            selectedJenjang = value!;
+                          });
+                        },
+                        decoration: InputDecoration(
+                          labelText: 'Pilih Jenjang',
+                          labelStyle: TextStyle(
+                            color: Colors.black,
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),),
+                    ],
+                  ),
+                  // TextFormField(
+                  //   controller: jenjang,
+                  //   decoration: InputDecoration(
+                  //       labelText: "Jenjang Anggota"
+                  //   ),
+                  // ),
                   SizedBox(height: 20,),
                   TextFormField(
                     controller: tglmasuk,
@@ -101,7 +165,7 @@ class AddAnggota extends StatelessWidget {
                             passworduser = password.text;
                             UserCredential result = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: passworduser);
                             User? user = result.user;
-                            anggota = new Anggota(npm.text, nama.text, alamat.text, jenjang.text, tglmasuk.text);
+                            anggota = new Anggota(npm.text, nama.text, alamat.text, selectedJenjang.toString(), tglmasuk.text,_gender.toString());
                             Map<String, dynamic> anggotaData = anggota.toJson();
                             await FirebaseFirestore.instance.collection('anggota')
                                 .doc(user?.uid).set(anggotaData);
@@ -143,6 +207,4 @@ class AddAnggota extends StatelessWidget {
       ),
     );
   }
-
-
 }
