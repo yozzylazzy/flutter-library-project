@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:uas_2020130002/admin/appadmin.dart';
 import 'package:uas_2020130002/controller/anggotaController.dart';
 import 'package:uas_2020130002/user/appuser.dart';
@@ -8,8 +9,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:developer';
 
-void main() {
+void main() async {
+  SystemChrome.setEnabledSystemUIMode(
+    SystemUiMode.edgeToEdge,);
   runApp(MyApp());
+
 }
 
 class MyApp extends StatelessWidget {
@@ -143,10 +147,12 @@ class _Login extends State<Login> {
             )
         ),
         onWillPop: () async {
-             return false;
+             return true;
            }
         );
+
   }
+
 
   void validateLogin(String user, String pass) async {
     bool valid = false;
