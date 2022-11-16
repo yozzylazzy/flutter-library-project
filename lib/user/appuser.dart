@@ -3,6 +3,7 @@ import 'package:uas_2020130002/user/history.dart';
 import 'package:uas_2020130002/user/peminjaman.dart';
 import 'package:uas_2020130002/user/user.dart';
 import 'homelibrary.dart';
+import 'package:animate_gradient/animate_gradient.dart';
 
 class AppUser extends StatefulWidget {
   // const AppUser({Key? key}) : super(key: key);
@@ -26,21 +27,38 @@ class _AppUserState extends State<AppUser> {
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: BottomAppBar(
-        color: Colors.black,
+        color: Color(0xFF3F0CAD),
         child: BottomBar(),
       ),
-        appBar: AppBar(
+      appBar: AppBar(
+        backgroundColor: Color(0xFF3F0CAD),
       ),
-      body: PageView(
-        scrollDirection: Axis.horizontal,
-            controller: pageController,
-            children: [
-              Home(useruid2),
-              WishlistBook(useruid2),
-              HistoryPage(useruid2),
-              HomeUser(useruid2)
-            ],
-        physics: NeverScrollableScrollPhysics(),
+      body: AnimateGradient(
+        primaryBegin: Alignment.bottomLeft,
+        primaryEnd: Alignment.topLeft,
+        secondaryBegin: Alignment.topRight,
+        secondaryEnd: Alignment.bottomRight,
+        primaryColors: const [
+          Colors.tealAccent,
+          Colors.greenAccent,
+          Colors.white,
+        ],
+        secondaryColors: const [
+          Colors.white,
+          Colors.lightBlueAccent,
+          Colors.blue,
+        ],
+        child: PageView(
+          scrollDirection: Axis.horizontal,
+          controller: pageController,
+          children: [
+            Home(useruid2),
+            WishlistBook(useruid2),
+            HistoryPage(useruid2),
+            HomeUser(useruid2)
+          ],
+          physics: NeverScrollableScrollPhysics(),
+        ),
       ),
     );
   }
@@ -49,7 +67,7 @@ class _AppUserState extends State<AppUser> {
     return BottomAppBar(
       shape: CircularNotchedRectangle(
       ),
-      color: Colors.black,
+      color: Color(0xFF3F0CAD),
       child: IconTheme(
           data: IconThemeData(color: Theme.of(context).colorScheme.onPrimary),
           child: Container(

@@ -161,10 +161,12 @@ class _Login extends State<Login> {
         );
         if (updateuser != null) {
           print("success");
-          Navigator.push(
-                  context, MaterialPageRoute(builder: (context) {
-                  return AppUser(userCredential.user!.uid.toString());
-                }),);
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Navigator.push(
+              context, MaterialPageRoute(builder: (context) {
+              return AppUser(userCredential.user!.uid.toString());
+            }),);
+          });
         }
       } on FirebaseAuthException catch (e) {
         if (e.code == 'user-not-found') {

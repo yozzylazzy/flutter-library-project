@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'dart:developer';
 
 import '../model/anggotamodel.dart';
@@ -22,14 +23,24 @@ class GetAnggota extends StatelessWidget {
           (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
         //Error Handling conditions
         if (snapshot.hasError) {
-          return Text("Something went wrong");
+          return Text("Something went wrong", style: TextStyle(
+            color: Colors.white, fontSize: 25,
+            fontWeight: FontWeight.w500,
+          ),);
         }
         if (snapshot.hasData && !snapshot.data!.exists) {
-          return Text("Document does not exist");
+          return Text("Document does not exist", style: TextStyle(
+            color: Colors.white, fontSize: 25,
+            fontWeight: FontWeight.w500,
+          ),);
         }
         if (snapshot.connectionState == ConnectionState.done) {
           Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
-          return Text("Selamat Datang, ${data['nama']}");
+          return Text("Selamat Datang, ${data['nama']}", style:
+          TextStyle(
+            color: Colors.white, fontSize: 25,
+            fontWeight: FontWeight.w500,
+          ),);
         }
         return Text("loading");
       },

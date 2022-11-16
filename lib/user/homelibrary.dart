@@ -6,6 +6,7 @@ import 'package:uas_2020130002/user/user.dart';
 import 'package:filter_list/filter_list.dart';
 import '../controller/bukuController.dart';
 import '../model/bukumodel.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class Home extends StatelessWidget {
   Home(this.useruid);
@@ -13,9 +14,7 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: HomeLibrary(useruid),
-    );
+    return  HomeLibrary(useruid);
   }
 }
 
@@ -33,6 +32,7 @@ class _HomeLibraryState extends State<HomeLibrary> {
     "Skripsi","Thesis","Buku Bacaan","Buku Ajar"
   ];
   List<String>? selectedBookList = [];
+  late BukuController repository = new BukuController();
 
   Future<void> _openFilterDialog() async {
     await FilterListDialog.display<String>(
@@ -81,32 +81,50 @@ class _HomeLibraryState extends State<HomeLibrary> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
+    return SingleChildScrollView(
         child: Container(
           padding: EdgeInsets.only(left: 20,right: 20, top: 10, bottom: 10),
           child: Column(
             children: [
+              SizedBox(height: 20,),
               GetAnggota(widget.useruid),
               SizedBox(height: 20,),
               Container(
-                height: 100,
+                height: 180,
                 child: Flex(
                   direction: Axis.horizontal,
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    Expanded(child: Card(
-                      elevation: 5,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Icon(Icons.collections_bookmark),
-                            Text("Total Buku Saat Ini"),
-                            Text("670")
-                          ],
+                    Container(
+                      child: Expanded(child: Card(
+                        semanticContainer: true,
+                        clipBehavior: Clip.antiAliasWithSaveLayer,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
                         ),
-                    )),
+                        elevation: 20,
+                        shadowColor: Colors.deepPurple,
+                        color: Color(0xffFAC32A),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(height: 20,),
+                          Icon(Icons.collections_bookmark,
+                          color: Colors.white, size: 40),
+                          SizedBox(height: 20,),
+                          Text("JUMLAH BUKU SAAT INI", style: TextStyle(
+                            color: Colors.white, fontSize: 25,
+                            fontWeight: FontWeight.w500,
+                          ),),
+                          SizedBox(height: 10,),
+                          Text("670", style: TextStyle(
+                            color: Colors.white, fontSize: 25,
+                            fontWeight: FontWeight.w500,
+                          ),),
+                        ],
+                      ),
+                    )),),
                     SizedBox(width: 10,),
                   ],
                 ),
@@ -129,10 +147,104 @@ class _HomeLibraryState extends State<HomeLibrary> {
                 ],
               ),
               SizedBox(height: 20,),
+              SizedBox(child: StreamBuilder(
+                  stream: repository.getStream(),
+                  builder: (BuildContext context, AsyncSnapshot  snapshot) {
+                    if (!snapshot.hasData) {
+                      return Center(child: const Text('Mohon Tunggu Sebentar...'));
+                    }
+                    return StaggeredGridView.countBuilder(
+                      staggeredTileBuilder: (int index) =>
+                          StaggeredTile.fit(1),
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      primary: false,
+                      crossAxisCount: 2,
+                      itemBuilder: (BuildContext context, int index) {
+                        // return GridTile(child: Text("hello"));
+                        return BookCard(context, snapshot.data.docs[index]['JudulBuku'],
+                            snapshot.data.docs[index]['JenisBuku'],
+                            snapshot.data.docs[index]['halaman'].toString(),
+                            snapshot.data.docs[index]['TahunTerbit'],
+                            snapshot.data.docs[index]['Pengarang']);
+                      },
+                      itemCount: snapshot.data.docs.length,
+                    );}
+              ),),
             ],
           ),
         ),
-      ),
     );
   }
+
+  Widget BookCard(BuildContext context, String judul, String jenisbuku, String halaman, String tahun, String pengarang){
+    return Container(
+      height: 220,
+      child: Card(
+          semanticContainer: true,
+          clipBehavior: Clip.antiAliasWithSaveLayer,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          elevation: 20,
+          shadowColor: Colors.deepPurple,
+          color: Colors.deepPurpleAccent,
+          child: InkWell(
+              splashColor: Colors.blue.withAlpha(30),
+              onTap: () {
+
+              },
+              child: Column(
+                  children: [
+                    Image.asset('assets/images/user.jpg'),
+                    SizedBox(height: 10,),
+                    Expanded(
+                      flex: 1,
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 10,right: 10),
+                        child: Text(
+                          judul,
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      )
+                    ),
+                    SizedBox(
+                      height: 8,
+                    ),
+                   Row(
+                     mainAxisAlignment: MainAxisAlignment.center,
+                     crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(jenisbuku,style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.grey,
+                        ),
+                        ),
+                        SizedBox(width: 2,),
+                        Text("-",style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.grey,
+                        ),),
+                        SizedBox(width: 2,),
+                        Flexible(child: Text(tahun,style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.grey,
+                        ),
+                        ),),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                  ],
+                ),
+              ),
+          ),
+    );
+  }
+
 }
