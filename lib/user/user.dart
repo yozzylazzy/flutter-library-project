@@ -101,7 +101,7 @@ class HomeUser extends StatelessWidget {
                                   return Text(
                                     'Loading...',
                                     style: TextStyle(
-                                        color: Colors.white,
+                                        color: Color(0xFFFAC32A),
                                         letterSpacing: 2,
                                         fontSize: 28,
                                         fontWeight: FontWeight.bold
@@ -137,7 +137,7 @@ class HomeUser extends StatelessWidget {
                                   return Text(
                                     "Loading...",
                                     style: TextStyle(
-                                        color: Colors.white,
+                                        color: Color(0xFFFAC32A),
                                         letterSpacing: 2,
                                         fontSize: 28,
                                         fontWeight: FontWeight.bold

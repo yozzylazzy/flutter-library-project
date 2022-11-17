@@ -13,6 +13,7 @@ class AnggotaList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.deepPurpleAccent,
       floatingActionButton: FloatingActionButton(
       onPressed: (){
         Navigator.push(
@@ -23,7 +24,82 @@ class AnggotaList extends StatelessWidget {
       backgroundColor: Colors.red,
       child: const Icon(Icons.add),
     ),
-      body: FullAnggotaList(),
+      body: Column(
+        children: [
+          Stack(
+            children: [
+              ClipPath(
+                  child: Container(
+                    height: 350,
+                    width: double.infinity,
+                    decoration:  BoxDecoration(
+                        color: Colors.transparent,
+                        image:  DecorationImage(image: AssetImage("assets/images/background.png"),
+                            fit: BoxFit.fill)
+                    ),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                  padding: EdgeInsets.only(left: 15, right: 15, top: 10),
+                                  child: Text("Latest Books", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),)
+                              ),
+                              SizedBox(height: 15,),
+                              Container(
+                                margin: EdgeInsets.only(left: 15),
+                                child: Container(
+                                  child: Card(
+                                    child: Text("TESTING"),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 25,),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+              ),
+
+
+              Padding(
+                  padding: EdgeInsets.only(top: 70,left: 40
+                  ),
+                  child: Column(
+                    children: [
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child:  Text("Welcome To",style:
+                        TextStyle(color: Colors.white,
+                            fontWeight: FontWeight.w500, fontSize: 20,
+                            fontFamily: 'Sono'),textAlign: TextAlign.left,),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text("M-Library",style:
+                        TextStyle(color: Colors.white,
+                            fontWeight: FontWeight.w900, fontSize: 35,
+                            fontFamily: 'Sono'),),
+                      )
+                    ],
+                  )
+              )
+            ],
+          ),
+          Container(
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.blueAccent)
+            ),
+          ),
+          Expanded(
+            child: FullAnggotaList()
+            ,),
+        ],
+      )
         // child: Container(
         //   padding: EdgeInsets.all(20),
         //   child: Column(

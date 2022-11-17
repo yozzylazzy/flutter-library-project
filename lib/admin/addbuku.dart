@@ -22,6 +22,7 @@ class AddBuku extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("Add Buku"),
+        backgroundColor: Color(0xFF3F0CAD),
       ),
       body: Padding(
         padding: EdgeInsets.all(20),

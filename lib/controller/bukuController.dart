@@ -14,6 +14,11 @@ class BukuController{
   Stream<QuerySnapshot> getStream(){
     return collectionReference.snapshots();
   }
+
+  Stream<QuerySnapshot> getStreamFiltered(String judul,String jenis){
+    return collectionReference.snapshots();
+  }
+
   void deleteBuku(Buku buku) async{
     await collectionReference.doc(buku.referenceId).delete();
   }

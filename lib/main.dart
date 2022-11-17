@@ -8,7 +8,9 @@ import 'firebase_options.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(
-    SystemUiMode.edgeToEdge,);
+      SystemUiMode.immersiveSticky, overlays:
+      [SystemUiOverlay.top]
+  );
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const HomePage());
 

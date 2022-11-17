@@ -21,7 +21,57 @@ class BukuList extends StatelessWidget {
         backgroundColor: Colors.red,
         child: const Icon(Icons.add),
       ),
-      body: FullBukuList(),
+      body: Column(
+        children: [
+          Stack(
+            children: [
+              ClipPath(
+                  child: Container(
+                    height: 350,
+                    width: double.infinity,
+                    decoration:  BoxDecoration(
+                        color: Colors.transparent,
+                        image:  DecorationImage(image: AssetImage("assets/images/background.png"),
+                            fit: BoxFit.fill)
+                    ),
+                    child:  Padding(
+                        padding: EdgeInsets.only(top: 30),
+                        child: Container(
+                          width: 400,
+                          child: Image.asset("assets/images/bukulist.png",
+                              fit: BoxFit.cover),
+                        )
+                    ),
+                  )
+              ),
+              Padding(
+                  padding: EdgeInsets.only(top: 70,left: 40
+                  ),
+                  child: Column(
+                    children: [
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child:  Text("Welcome To",style:
+                        TextStyle(color: Colors.white,
+                            fontWeight: FontWeight.w500, fontSize: 20,
+                            fontFamily: 'Sono'),textAlign: TextAlign.left,),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text("M-Library",style:
+                        TextStyle(color: Colors.white,
+                            fontWeight: FontWeight.w900, fontSize: 35,
+                            fontFamily: 'Sono'),),
+                      )
+
+                    ],
+                  )
+              )
+            ],
+          ),
+          Expanded(child: FullBukuList(),),
+        ],
+      )
     );
   }
 }

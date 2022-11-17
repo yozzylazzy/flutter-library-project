@@ -32,6 +32,7 @@ class _AddAnggotaState extends State<AddAnggota> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Tambah Anggota"),
+        backgroundColor: Color(0xFF3F0CAD),
       ),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,

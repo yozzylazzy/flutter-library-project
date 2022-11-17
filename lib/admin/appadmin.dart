@@ -26,32 +26,16 @@ class _AppAdminState extends State<AppAdmin> {
       appBar: AppBar(
         backgroundColor: Color(0xFF3F0CAD),
       ),
-      body: AnimateGradient(
-    primaryBegin: Alignment.bottomLeft,
-    primaryEnd: Alignment.topLeft,
-    secondaryBegin: Alignment.topRight,
-    secondaryEnd: Alignment.bottomRight,
-    primaryColors: const [
-    Colors.tealAccent,
-    Colors.greenAccent,
-    Colors.white,
-    ],
-    secondaryColors: const [
-    Colors.white,
-    Colors.lightBlueAccent,
-    Colors.blue,
-    ],
-    child: PageView(
-        scrollDirection: Axis.horizontal,
-        controller: pageController,
-        children: [
-              AnggotaList(),
-              BukuList(),
-              TransaksiBukuList()
-        ],
-        physics: NeverScrollableScrollPhysics(),
-      ),
-      )
+      body: PageView(
+              scrollDirection: Axis.horizontal,
+              controller: pageController,
+              children: [
+                    AnggotaList(),
+                    BukuList(),
+                    TransaksiBukuList()
+              ],
+              physics: NeverScrollableScrollPhysics(),
+            ),
     );
   }
 
