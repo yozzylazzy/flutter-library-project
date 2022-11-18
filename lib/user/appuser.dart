@@ -30,25 +30,10 @@ class _AppUserState extends State<AppUser> {
         color: Color(0xFF3F0CAD),
         child: BottomBar(),
       ),
-      appBar: AppBar(
-        backgroundColor: Color(0xFF3F0CAD),
-      ),
-      body: AnimateGradient(
-        primaryBegin: Alignment.bottomLeft,
-        primaryEnd: Alignment.topLeft,
-        secondaryBegin: Alignment.topRight,
-        secondaryEnd: Alignment.bottomRight,
-        primaryColors: const [
-          Colors.tealAccent,
-          Colors.greenAccent,
-          Colors.white,
-        ],
-        secondaryColors: const [
-          Colors.white,
-          Colors.lightBlueAccent,
-          Colors.blue,
-        ],
-        child: PageView(
+      // appBar: AppBar(
+      //   backgroundColor: Color(0xFF3F0CAD),
+      // ),
+      body: PageView(
           scrollDirection: Axis.horizontal,
           controller: pageController,
           children: [
@@ -59,7 +44,6 @@ class _AppUserState extends State<AppUser> {
           ],
           physics: NeverScrollableScrollPhysics(),
         ),
-      ),
     );
   }
 

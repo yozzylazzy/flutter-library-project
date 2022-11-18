@@ -275,7 +275,7 @@ class _Login extends State<Login> {
         if (updateuser != null) {
           print("success");
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            Navigator.push(
+            Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) {
               return AppUser(userCredential.user!.uid.toString());
             }),);

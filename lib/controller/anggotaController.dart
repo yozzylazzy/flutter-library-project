@@ -36,13 +36,20 @@ class GetAnggota extends StatelessWidget {
         }
         if (snapshot.connectionState == ConnectionState.done) {
           Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
-          return Text("Selamat Datang, ${data['nama']}", style:
+          return Padding(padding: EdgeInsets.only(left: 20,right: 20),
+          child: Text("Selamat Datang, ${data['nama']}", style:
           TextStyle(
-            color: Colors.white, fontSize: 25,
-            fontWeight: FontWeight.w500,
-          ),);
+              color: Colors.white, fontSize: 25,
+              fontWeight: FontWeight.w900,
+              fontFamily: 'Montserrat'
+          ),));
         }
-        return Text("loading");
+        return Text("Loading...", style:
+        TextStyle(
+            color: Colors.grey, fontSize: 25,
+            fontWeight: FontWeight.w800,
+            fontFamily: 'Montserrat'
+        ),);
       },
     );
   }

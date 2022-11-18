@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:filter_list/filter_list.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:uas_2020130002/admin/addanggota.dart';
@@ -7,13 +8,23 @@ import 'package:uas_2020130002/controller/bukuController.dart';
 
 import '../model/anggotamodel.dart';
 
-class AnggotaList extends StatelessWidget {
+class AnggotaList extends StatefulWidget {
   const AnggotaList({Key? key}) : super(key: key);
+
+  @override
+  State<AnggotaList> createState() => _AnggotaListState();
+}
+
+class _AnggotaListState extends State<AnggotaList> {
+  final List<String> angggotaList = [
+    "2020","2021","2022","2023"
+  ];
+  List<String>? selectedAnggotaList = [];
+  late AnggotaController repository = new AnggotaController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.deepPurpleAccent,
       floatingActionButton: FloatingActionButton(
       onPressed: (){
         Navigator.push(
@@ -21,7 +32,7 @@ class AnggotaList extends StatelessWidget {
           return AddAnggota();
         }),);
       },
-      backgroundColor: Colors.red,
+      backgroundColor: Colors.deepPurple,
       child: const Icon(Icons.add),
     ),
       body: Column(
@@ -37,35 +48,14 @@ class AnggotaList extends StatelessWidget {
                         image:  DecorationImage(image: AssetImage("assets/images/background.png"),
                             fit: BoxFit.fill)
                     ),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                  padding: EdgeInsets.only(left: 15, right: 15, top: 10),
-                                  child: Text("Latest Books", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),)
-                              ),
-                              SizedBox(height: 15,),
-                              Container(
-                                margin: EdgeInsets.only(left: 15),
-                                child: Container(
-                                  child: Card(
-                                    child: Text("TESTING"),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 25,),
-                            ],
-                          ),
-                        ],
-                      ),
+                    child:  Padding(
+                        padding: EdgeInsets.only(top: 30),
+                        child: Container(
+                          width: 400,
+                        )
                     ),
-                  ),
+                  )
               ),
-
-
               Padding(
                   padding: EdgeInsets.only(top: 70,left: 40
                   ),
@@ -73,41 +63,88 @@ class AnggotaList extends StatelessWidget {
                     children: [
                       Align(
                         alignment: Alignment.centerLeft,
-                        child:  Text("Welcome To",style:
+                        child:  Text("Laman Administrator",style:
                         TextStyle(color: Colors.white,
                             fontWeight: FontWeight.w500, fontSize: 20,
                             fontFamily: 'Sono'),textAlign: TextAlign.left,),
                       ),
                       Align(
                         alignment: Alignment.centerLeft,
-                        child: Text("M-Library",style:
+                        child: Text("ANGGOTA",style:
                         TextStyle(color: Colors.white,
                             fontWeight: FontWeight.w900, fontSize: 35,
                             fontFamily: 'Sono'),),
                       )
+
                     ],
                   )
               )
             ],
           ),
-          Container(
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.blueAccent)
-            ),
-          ),
+          Padding(padding: EdgeInsets.only(left: 20, right: 20),
+            child:TextFormField(
+              decoration: InputDecoration(
+                suffixIcon: IconButton(icon : Icon(Icons.list), onPressed: _openFilterDialog,),
+                labelText: "Nama/NPM Anggota",
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                  borderSide: BorderSide(
+                      color: Colors.black
+                  ),
+                ),
+              ),
+            ),),
+          SizedBox(height: 20,),
           Expanded(
             child: FullAnggotaList()
             ,),
         ],
       )
-        // child: Container(
-        //   padding: EdgeInsets.all(20),
-        //   child: Column(
-        //     children: [
-        //         Text("List Anggota"),
-        //     ],
-        //   ),
-        // ),
+    );
+  }
+
+  Future<void> _openFilterDialog() async {
+    await FilterListDialog.display<String>(
+      this.context,
+      hideSelectedTextCount: true,
+      themeData: FilterListThemeData(this.context),
+      headlineText: 'Pilih Tahun Gabung Anggota',
+      height: 500,
+      listData: angggotaList,
+      selectedListData: selectedAnggotaList,
+      choiceChipLabel: (item) => item!,
+      validateSelectedItem: (list, val) => list!.contains(val),
+      controlButtons: [ControlButtonType.All, ControlButtonType.Reset],
+      onItemSearch: (item, query) {
+        /// When search query change in search bar then this method will be called
+        ///
+        /// Check if items contains query
+        return item.toLowerCase().contains(query.toLowerCase());
+      },
+
+      onApplyButtonClick: (list) {
+        setState(() {
+          selectedAnggotaList = List.from(list!);
+        });
+        Navigator.pop(this.context);
+      },
+
+      /// uncomment below code to create custom choice chip
+      /* choiceChipBuilder: (context, item, isSelected) {
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          decoration: BoxDecoration(
+              border: Border.all(
+            color: isSelected! ? Colors.blue[300]! : Colors.grey[300]!,
+          )),
+          child: Text(
+            item.name,
+            style: TextStyle(
+                color: isSelected ? Colors.blue[300] : Colors.grey[500]),
+          ),
+        );
+      }, */
     );
   }
 }
@@ -117,24 +154,45 @@ class AnggotaCardList extends StatelessWidget {
   final AnggotaController repository = new AnggotaController();
   AnggotaCardList({Key? key, required this.anggota}) : super(key: key);
 
+  String _setImageUser(){
+    String img = "${anggota.gender}";
+    String path = "";
+
+    if(img == "Wanita") {
+      path = "assets/images/wanita.png";
+    } else if(img == "Pria") {
+      path = "assets/images/pria.png";
+    }
+    return path;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return Padding(padding: EdgeInsets.only(left:10, right: 10),
+    child: Card(
       child: SizedBox(
         height: 100,
         width: 300,
         child: InkWell(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Row(
             children: [
-              Text(anggota.npm,style: TextStyle(fontWeight: FontWeight.bold),),
-              Text(anggota.nama),
-              Text(anggota.jenjang),
-              Spacer(),
-              IconButton(onPressed: () async {
-                repository.deleteAnggota(anggota);
-              },
-                icon: Icon(Icons.restore_from_trash_rounded),
+              Flexible(child: Image.asset(_setImageUser()
+                , width: 100,
+                height: 100,
+              ),),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(anggota.npm,style: TextStyle(fontWeight: FontWeight.bold),),
+                  Text(anggota.nama),
+                  Text(anggota.jenjang),
+                  Spacer(),
+                  IconButton(onPressed: () async {
+                    repository.deleteAnggota(anggota);
+                  },
+                    icon: Icon(Icons.restore_from_trash_rounded),
+                  ),
+                ],
               ),
             ],
           ),
@@ -144,7 +202,7 @@ class AnggotaCardList extends StatelessWidget {
           },
         ),
       ),
-    );
+    ),);
   }
 }
 

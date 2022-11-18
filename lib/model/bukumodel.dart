@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 
 class Buku{
   String id;
@@ -33,6 +34,12 @@ class Buku{
   factory Buku.fromSnapshot(DocumentSnapshot snapshot){
     final newBuku = Buku.fromJson(snapshot.data() as Map<String, dynamic>);
     newBuku.referenceId = snapshot.reference.id;
+    return newBuku;
+  }
+
+  factory Buku.fromAsyncSnapshot(AsyncSnapshot snapshot){
+    final newBuku = Buku.fromJson(snapshot.data() as Map<String, dynamic>);
+    newBuku.referenceId = snapshot.data.id;
     return newBuku;
   }
 

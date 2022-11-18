@@ -44,6 +44,7 @@ dependencies:
   flutter_staggered_grid_view: ^0.4.0
   animate_gradient: ^0.0.2
   flutter_screenutil: ^5.6.0
+  qr_flutter: ^4.0.0
 
 dev_dependencies:
   flutter_test:
@@ -73,6 +74,8 @@ flutter:
       - assets/images/login.png
       - assets/images/background.png
       - assets/images/bukulist.png
+      - assets/images/pria.png
+      - assets/images/wanita.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

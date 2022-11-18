@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:uas_2020130002/admin/bukulist.dart';
 import 'package:uas_2020130002/controller/anggotaController.dart';
+import 'package:uas_2020130002/user/detailbuku.dart';
+import 'package:uas_2020130002/user/detailpeminjaman.dart';
 import 'package:uas_2020130002/user/user.dart';
 import 'package:filter_list/filter_list.dart';
 import '../controller/bukuController.dart';
@@ -82,72 +84,87 @@ class _HomeLibraryState extends State<HomeLibrary> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-        child: Container(
-          padding: EdgeInsets.only(left: 20,right: 20, top: 10, bottom: 10),
-          child: Column(
+        child: Column(
             children: [
-              SizedBox(height: 20,),
-              GetAnggota(widget.useruid),
-              SizedBox(height: 20,),
               Container(
-                height: 180,
-                child: Flex(
-                  direction: Axis.horizontal,
-                  mainAxisSize: MainAxisSize.max,
+                child: Stack(
+                  clipBehavior: Clip.none,
                   children: [
-                    Container(
-                      child: Expanded(child: Card(
-                        semanticContainer: true,
-                        clipBehavior: Clip.antiAliasWithSaveLayer,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        elevation: 20,
-                        shadowColor: Colors.deepPurple,
-                        color: Color(0xffFAC32A),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                  Container(
+                  width: double.infinity,
+                  height: 350,
+                  decoration: BoxDecoration(
+                    color: Color(0xFF5B61D9),
+                    borderRadius: BorderRadius.only(bottomLeft: Radius.elliptical(300,150)),
+                  ),
+                  ),
+                    Positioned(
+                      top: 30,
+                        left: 10, right: 10,
+                      child:
+                      Column(
                         children: [
-                          SizedBox(height: 20,),
-                          Icon(Icons.collections_bookmark,
-                          color: Colors.white, size: 40),
-                          SizedBox(height: 20,),
-                          Text("JUMLAH BUKU SAAT INI", style: TextStyle(
-                            color: Colors.white, fontSize: 25,
-                            fontWeight: FontWeight.w500,
-                          ),),
+                          GetAnggota(widget.useruid),
                           SizedBox(height: 10,),
-                          Text("670", style: TextStyle(
-                            color: Colors.white, fontSize: 25,
-                            fontWeight: FontWeight.w500,
-                          ),),
+                          Text("Berikut Informasi Perpustakaan : ",
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                fontFamily: 'Sono',
+                                color: Colors.white, fontSize: 12,
+                              )),
+                          Container(
+                            margin: const EdgeInsets.symmetric(vertical: 20.0),
+                            height: 200.0,
+                            child: bookHorizontalInfo(),
+                          ),
                         ],
-                      ),
-                    )),),
-                    SizedBox(width: 10,),
-                  ],
-                ),
-              ), //Status Buku Pada Perpustakaan
-              SizedBox(height: 20,),
-              Row(
-                children: [
-                  Flexible(child: TextFormField(
-                    decoration: InputDecoration(
-                      suffixIcon: IconButton(icon : Icon(Icons.list), onPressed: _openFilterDialog,),
-                      labelText: "Judul Buku",
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20),
-                        borderSide: BorderSide(
-                          color: Colors.black
-                        ),
-                      ),
+                      )
                     ),
-                  ),),
-                ],
+                  ],
+                )
               ),
               SizedBox(height: 20,),
-              SizedBox(child: StreamBuilder(
+              Text("CARI/FILTER DATA BUKU", style: TextStyle(
+                color: Colors.grey,
+                fontSize: 20,
+                fontFamily: 'Montserrat',
+              )),
+              SizedBox(height: 20,),
+              Padding(padding: EdgeInsets.only(left: 20,right: 20),
+              child: Row(
+                  children: [
+                    Flexible(child: TextFormField(
+                      decoration: InputDecoration(
+                        suffixIcon: IconButton(icon : Icon(Icons.list), onPressed: _openFilterDialog,),
+                        labelText: "Judul Buku",
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          borderSide: BorderSide(
+                              color: Colors.black
+                          ),
+                        ),
+                      ),
+                    ),),
+                  ],
+                ),),
+              SizedBox(height: 20,),
+              Padding(padding: EdgeInsets.only(left: 20, right: 20), child: Divider(
+                color: Colors.grey,
+                thickness: 2,
+              ),),
+              SizedBox(height: 20,),
+              Align(
+                child: Text(
+                  "LIST SEMUA BUKU", style: TextStyle(
+                  fontFamily: 'Montserrat',
+                  fontSize: 20,
+                ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              SizedBox(height: 20,),
+              Padding(padding: EdgeInsets.only(left: 20, right: 20),
+              child: SizedBox(child: StreamBuilder(
                   stream: repository.getStream(),
                   builder: (BuildContext context, AsyncSnapshot  snapshot) {
                     if (!snapshot.hasData) {
@@ -161,7 +178,6 @@ class _HomeLibraryState extends State<HomeLibrary> {
                       primary: false,
                       crossAxisCount: 2,
                       itemBuilder: (BuildContext context, int index) {
-                        // return GridTile(child: Text("hello"));
                         return BookCard(context, snapshot.data.docs[index]['JudulBuku'],
                             snapshot.data.docs[index]['JenisBuku'],
                             snapshot.data.docs[index]['halaman'].toString(),
@@ -170,14 +186,17 @@ class _HomeLibraryState extends State<HomeLibrary> {
                       },
                       itemCount: snapshot.data.docs.length,
                     );}
-              ),),
+              ),),)
             ],
           ),
-        ),
     );
   }
 
   Widget BookCard(BuildContext context, String judul, String jenisbuku, String halaman, String tahun, String pengarang){
+    final Buku buku;
+    final BukuController repository = new BukuController();
+    // BookCard({Key? key, required this.buku}) : super(key: key);
+
     return Container(
       height: 220,
       child: Card(
@@ -192,7 +211,11 @@ class _HomeLibraryState extends State<HomeLibrary> {
           child: InkWell(
               splashColor: Colors.blue.withAlpha(30),
               onTap: () {
-
+                Navigator.push<Widget>(
+                  context, MaterialPageRoute(builder: (context) {
+                  // return DetailBuku(buku: buku);
+                  return DetailPeminjaman();
+                }),);
               },
               child: Column(
                   children: [
@@ -244,6 +267,113 @@ class _HomeLibraryState extends State<HomeLibrary> {
                 ),
               ),
           ),
+    );
+  }
+
+  Widget bookHorizontalInfo(){
+    return ListView(
+      scrollDirection: Axis.horizontal,
+      children: <Widget>[
+        Container(
+          width: 345,
+          height: 600,
+          child: Center(
+            child: SizedBox(
+              width: 380,
+              height: 400,
+              child: Card(
+                  elevation: 7,
+                  color: Color(0xFF888DF2),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.person, color: Colors.white,
+                          size: 100),
+                      Text("TOTAL PEMINJAMAN ANDA",
+                          style: TextStyle(
+                            fontFamily: 'Sono',
+                            color: Colors.white, fontSize: 20,
+                          )),
+                      Text("32",
+                          style: TextStyle(
+                            fontFamily: 'Sono',
+                            color: Colors.white, fontSize: 30,
+                          )),
+                    ],
+                  )
+              ),
+            ),
+          ),
+        ),
+        SizedBox(width: 20,),
+        Container(
+          width: 345,
+          height: 600,
+          child: Center(
+            child: SizedBox(
+              width: 380,
+              height: 400,
+              child: Card(
+                  elevation: 7,
+                  color: Color(0xFF888DF2),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.bookmark_add, color: Colors.white,
+                          size: 100),
+                      Text("PINJAMAN BERLANGSUNG",
+                          style: TextStyle(
+                            fontFamily: 'Sono',
+                            color: Colors.white, fontSize: 20,
+                          )),
+                      Text("3",
+                          style: TextStyle(
+                            fontFamily: 'Sono',
+                            color: Colors.white, fontSize: 30,
+                          )),
+                    ],
+                  )
+              ),
+            ),
+          ),
+        ),
+        SizedBox(width: 20,),
+        Container(
+          width: 345,
+          height: 600,
+          child: Center(
+            child: SizedBox(
+              width: 380,
+              height: 400,
+              child: Card(
+                elevation: 7,
+                color: Color(0xFF888DF2),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.book, color: Colors.white,
+                    size: 100),
+                    Text("TOTAL BUKU SAAT INI",
+                        style: TextStyle(
+                            fontFamily: 'Sono',
+                            color: Colors.white, fontSize: 20,
+                        )),
+                    Text("131",
+                        style: TextStyle(
+                          fontFamily: 'Sono',
+                          color: Colors.white, fontSize: 30,
+                        )),
+                  ],
+                  )
+              ),
+            ),
+          ),
+        ),
+        SizedBox(width: 20,),
+      ],
     );
   }
 

@@ -23,9 +23,9 @@ class _AppAdminState extends State<AppAdmin> {
     return Scaffold(
       bottomNavigationBar:
       BottomBarAnimated(),
-      appBar: AppBar(
-        backgroundColor: Color(0xFF3F0CAD),
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: Color(0xFF3F0CAD),
+      // ),
       body: PageView(
               scrollDirection: Axis.horizontal,
               controller: pageController,
