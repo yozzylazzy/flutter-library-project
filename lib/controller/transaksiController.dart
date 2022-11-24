@@ -4,24 +4,34 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:uas_2020130002/model/peminjaman.dart';
 
 import '../model/bukumodel.dart';
 
-class _getTransaksiAll{
+class TransaksiController{
   final CollectionReference collectionReference =
   FirebaseFirestore.instance.collection('transaksi');
 
   Stream<QuerySnapshot> getStream(){
     return collectionReference.snapshots();
   }
-  void deleteBuku(Buku buku) async{
-    await collectionReference.doc(buku.id).delete();
+  void deleteTransaksi(Peminjaman peminjaman) async{
+    await collectionReference.doc(peminjaman.idpeminjaman).delete();
   }
-  Future<DocumentReference> addBuku(Buku buku){
-    return collectionReference.add(buku.toJson());
+  Future<DocumentReference> addTransaksi(Peminjaman peminjaman){
+    return collectionReference.add(peminjaman.toJson());
   }
-  void updateBuku(Buku buku) async {
-    await collectionReference.doc(buku.id).update(buku.toJson());
+  void updateTransaksi(Peminjaman peminjaman) async {
+    await collectionReference.doc(peminjaman.idpeminjaman).update(peminjaman.toJson());
   }
+
+  Stream<QuerySnapshot> getTransaksiPengguna(String id){
+    return collectionReference.where("npm", isEqualTo: id).where("status", isEqualTo: "selesai").snapshots();
+  }
+
+  Stream<QuerySnapshot> getPesananPengguna(String id){
+    return collectionReference.where("npm", isEqualTo: id).where("status", isEqualTo: "dipesan").snapshots();
+  }
+
 }
 

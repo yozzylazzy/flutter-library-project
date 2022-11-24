@@ -8,6 +8,12 @@ class History{
   String tahunterbit;
   String idpeminjaman;
   DateTime tglpeminjaman;
+  String? referenceId;
+
   History(this.idhistory, this.idbuku, this.namabuku, this.jenis, this.penulis,
       this.tahunterbit, this.idpeminjaman, this.tglpeminjaman);
+
+
+
+
 }

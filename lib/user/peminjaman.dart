@@ -1,7 +1,9 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:uas_2020130002/controller/transaksiController.dart';
 import 'package:uas_2020130002/user/detailbuku.dart';
 import 'package:uas_2020130002/user/detailpeminjaman.dart';
 import 'package:uas_2020130002/user/detailpinjamqr.dart';
@@ -13,7 +15,10 @@ class WishlistBook extends StatelessWidget {
   // const WishlistBook({Key? key}) : super(key: key);
   WishlistBook(this.useruid);
   final String useruid;
-  late BukuController repository = new BukuController();
+  late TransaksiController repository = new TransaksiController();
+
+  final CollectionReference collectionReference =
+  FirebaseFirestore.instance.collection('anggota');
 
   @override
   Widget build(BuildContext context) {
@@ -111,10 +116,22 @@ class WishlistBook extends StatelessWidget {
         ]),
     );
   }
+
+  String getUserNPM(String userid)  {
+    DocumentReference documentReference = collectionReference.doc(userid);
+    String npm = ' ';
+    documentReference.get().then((snapshot) {
+      npm = snapshot['npm'];
+      print(npm);
+    });
+    //debugPrint(npm);
+    return npm;
+  }
+
   Widget bookCard(){
     return Padding(padding: EdgeInsets.only(left: 20, right: 20),
       child: SizedBox(child: StreamBuilder(
-          stream: repository.getStream(),
+          stream: repository.getPesananPengguna(getUserNPM(useruid)),
           builder: (BuildContext context, AsyncSnapshot  snapshot) {
             if (!snapshot.hasData) {
               return Center(child: const Text('Mohon Tunggu Sebentar...'));
@@ -127,11 +144,11 @@ class WishlistBook extends StatelessWidget {
               primary: false,
               crossAxisCount: 1,
               itemBuilder: (BuildContext context, int index) {
-                return BookCard(context, snapshot.data.docs[index]['JudulBuku'],
-                    snapshot.data.docs[index]['JenisBuku'],
-                    snapshot.data.docs[index]['halaman'].toString(),
-                    snapshot.data.docs[index]['TahunTerbit'],
-                    snapshot.data.docs[index]['Pengarang']);
+                return BookCard(context, snapshot.data.docs[index]['IDTransaksi'],
+                    snapshot.data.docs[index]['IdBuku'],
+                    snapshot.data.docs[index]['npm'].toString(),
+                    snapshot.data.docs[index]['status'],
+                    snapshot.data.docs[index]['waktupinjam'].toString());
               },
               itemCount: snapshot.data.docs.length,
             );}

@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:uas_2020130002/login.dart';
 import 'dart:developer';
+import 'dart:core';
 
 import '../model/anggotamodel.dart';
 
@@ -93,5 +95,7 @@ class AnggotaController{
   void updateAnggota(Anggota anggota) async {
     await collectionReference.doc(anggota.referenceId).update(anggota.toJson());
   }
+
+
 
 }

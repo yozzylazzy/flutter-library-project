@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:uas_2020130002/admin/bukulist.dart';
 import 'package:uas_2020130002/controller/anggotaController.dart';
+import 'package:uas_2020130002/controller/transaksiController.dart';
 import 'package:uas_2020130002/user/detailbuku.dart';
 import 'package:uas_2020130002/user/detailpeminjaman.dart';
 import 'package:uas_2020130002/user/user.dart';
@@ -26,15 +27,20 @@ class HomeLibrary extends StatefulWidget {
   final String useruid;
 
   @override
-  State<HomeLibrary> createState() => _HomeLibraryState();
+  State<HomeLibrary> createState() => _HomeLibraryState(useruid);
 }
 
 class _HomeLibraryState extends State<HomeLibrary> {
   final List<String> bookList = [
     "Skripsi","Thesis","Buku Bacaan","Buku Ajar"
   ];
+  final String id;
+  _HomeLibraryState(this.id);
   List<String>? selectedBookList = [];
   late BukuController repository = new BukuController();
+  late TransaksiController repositorytransaksi = new TransaksiController();
+  final CollectionReference collectionReference =
+  FirebaseFirestore.instance.collection('anggota');
 
   Future<void> _openFilterDialog() async {
     await FilterListDialog.display<String>(
@@ -113,7 +119,7 @@ class _HomeLibraryState extends State<HomeLibrary> {
                                 color: Colors.white, fontSize: 12,
                               )),
                           Container(
-                            margin: const EdgeInsets.symmetric(vertical: 20.0),
+                            margin: const EdgeInsets.symmetric(vertical: 30.0,horizontal: 10.0),
                             height: 200.0,
                             child: bookHorizontalInfo(),
                           ),
@@ -270,6 +276,17 @@ class _HomeLibraryState extends State<HomeLibrary> {
     );
   }
 
+  String getUserNPM(String userid)  {
+    DocumentReference documentReference = collectionReference.doc(userid);
+    String npm = ' ';
+    documentReference.get().then((snapshot) {
+      npm = snapshot['npm'];
+      print(npm);
+    });
+    //debugPrint(npm);
+    return npm;
+  }
+
   Widget bookHorizontalInfo(){
     return ListView(
       scrollDirection: Axis.horizontal,
@@ -295,7 +312,7 @@ class _HomeLibraryState extends State<HomeLibrary> {
                             fontFamily: 'Sono',
                             color: Colors.white, fontSize: 20,
                           )),
-                      Text("32",
+                      Text("0",
                           style: TextStyle(
                             fontFamily: 'Sono',
                             color: Colors.white, fontSize: 30,

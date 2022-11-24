@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:filter_list/filter_list.dart';
 import 'package:flutter/material.dart';
-
-import '../controller/bukuController.dart';
-import '../model/bukumodel.dart';
-import 'editbuku.dart';
+import 'package:uas_2020130002/admin/addtransaksi.dart';
+import 'package:uas_2020130002/admin/edittransaksi.dart';
+import 'package:uas_2020130002/controller/transaksiController.dart';
+import 'package:uas_2020130002/model/peminjaman.dart';
 
 class TransaksiBukuList extends StatefulWidget {
   const TransaksiBukuList({Key? key}) : super(key: key);
@@ -18,18 +18,17 @@ class _TransaksiBukuListState extends State<TransaksiBukuList> {
     "Skripsi","Thesis","Buku Bacaan","Buku Ajar"
   ];
   List<String>? selectedBookList = [];
-  late BukuController repository = new BukuController();
+  late TransaksiController repository = new TransaksiController();
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
         floatingActionButton: FloatingActionButton(
         onPressed: (){
-      // Navigator.push(
-      //   context, MaterialPageRoute(builder: (context) {
-      //   return
-      // }),);
+      Navigator.push(
+        context, MaterialPageRoute(builder: (context) {
+        return AddTransaksi();
+      }),);
         },
           backgroundColor: Colors.deepPurple,
           child: const Icon(Icons.add),
@@ -74,7 +73,6 @@ class _TransaksiBukuListState extends State<TransaksiBukuList> {
                             fontWeight: FontWeight.w900, fontSize: 35,
                             fontFamily: 'Sono'),),
                       )
-
                     ],
                   )
               )
@@ -84,7 +82,7 @@ class _TransaksiBukuListState extends State<TransaksiBukuList> {
             child:TextFormField(
               decoration: InputDecoration(
                 suffixIcon: IconButton(icon : Icon(Icons.list), onPressed: _openFilterDialog,),
-                labelText: "Judul Buku",
+                labelText: "LIST TRANSAKSI",
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
                   borderSide: BorderSide(
@@ -94,7 +92,7 @@ class _TransaksiBukuListState extends State<TransaksiBukuList> {
               ),
             ),),
           SizedBox(height: 20,),
-          Expanded(child: FullBukuList(),),
+          Expanded(child: FullTransaksiList(),),
         ],
       )
     );
@@ -147,10 +145,10 @@ class _TransaksiBukuListState extends State<TransaksiBukuList> {
 }
 
 
-class BukuCardList extends StatelessWidget {
-  final Buku buku;
-  final BukuController repository = new BukuController();
-  BukuCardList({Key? key, required this.buku}) : super(key: key);
+class TransaksiCardList extends StatelessWidget {
+  final Peminjaman peminjaman;
+  final TransaksiController repository = new TransaksiController();
+  TransaksiCardList({Key? key, required this.peminjaman}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -171,9 +169,10 @@ class BukuCardList extends StatelessWidget {
                   Flexible(child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Flexible(child: Text(buku.title,style: TextStyle(fontWeight: FontWeight.bold),)),
-                      Text(buku.jenisbuku),
-                      Text(buku.tahunTerbit),
+                      Flexible(child: Text(peminjaman.idpeminjaman,style: TextStyle(fontWeight: FontWeight.bold),)),
+                      Text(peminjaman.IdBuku),
+                      Text(peminjaman.npm),
+                      Text(peminjaman.status),
                     ],
                   ),),
                   Spacer(),
@@ -186,7 +185,7 @@ class BukuCardList extends StatelessWidget {
               ),
               onTap: (){
                 Navigator.push<Widget>(context, MaterialPageRoute(builder:
-                    (context)=> EditBuku(buku: buku)));
+                    (context)=> EditTransaksi(peminjaman: peminjaman)));
               },
             ),
           ),
@@ -195,22 +194,22 @@ class BukuCardList extends StatelessWidget {
   }
 }
 
-class FullBukuList extends StatefulWidget {
-  const FullBukuList({Key? key}) : super(key: key);
+class FullTransaksiList extends StatefulWidget {
+  const FullTransaksiList({Key? key}) : super(key: key);
 
   @override
-  State<FullBukuList> createState() => _FullBukuListState();
+  State<FullTransaksiList> createState() => _FullTransaksiListState();
 }
 
-class _FullBukuListState extends State<FullBukuList> {
-  BukuController repository = BukuController();
+class _FullTransaksiListState extends State<FullTransaksiList> {
+  TransaksiController repository = TransaksiController();
 
   @override
   Widget build(BuildContext context) {
-    return _buildBukuHome(context);
+    return _buildTransaksiHome(context);
   }
 
-  Widget _buildBukuHome(BuildContext context) {
+  Widget _buildTransaksiHome(BuildContext context) {
     return Scaffold(
       body: StreamBuilder<QuerySnapshot>(
         stream: repository.getStream(),
@@ -237,7 +236,7 @@ class _FullBukuListState extends State<FullBukuList> {
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot
   snapshot) {
-    var buku = Buku.fromSnapshot(snapshot);
-    return BukuCardList(buku: buku);
+    var peminjaman = Peminjaman.fromSnapshot(snapshot);
+    return TransaksiCardList(peminjaman: peminjaman);
   }
 }
