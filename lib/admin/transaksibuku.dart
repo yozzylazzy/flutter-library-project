@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:filter_list/filter_list.dart';
 import 'package:flutter/material.dart';
-import 'package:uas_2020130002/admin/addtransaksi.dart';
 import 'package:uas_2020130002/admin/edittransaksi.dart';
+import 'package:uas_2020130002/admin/scantransaksi.dart';
 import 'package:uas_2020130002/controller/transaksiController.dart';
 import 'package:uas_2020130002/model/peminjaman.dart';
 
@@ -27,11 +27,11 @@ class _TransaksiBukuListState extends State<TransaksiBukuList> {
         onPressed: (){
       Navigator.push(
         context, MaterialPageRoute(builder: (context) {
-        return AddTransaksi();
+        return ScanTransaksi();
       }),);
         },
           backgroundColor: Colors.deepPurple,
-          child: const Icon(Icons.add),
+          child: const Icon(Icons.qr_code_scanner),
         ),
       body: Column(
         children: [
@@ -123,7 +123,6 @@ class _TransaksiBukuListState extends State<TransaksiBukuList> {
         });
         Navigator.pop(this.context);
       },
-
       /// uncomment below code to create custom choice chip
       /* choiceChipBuilder: (context, item, isSelected) {
         return Container(
@@ -150,6 +149,19 @@ class TransaksiCardList extends StatelessWidget {
   final TransaksiController repository = new TransaksiController();
   TransaksiCardList({Key? key, required this.peminjaman}) : super(key: key);
 
+  String _setImageStatus(){
+    String img = "${peminjaman.status}";
+    String path = "";
+    if(img == "dipesan") {
+      path = "assets/images/dipesan.png";
+    } else if(img == "dipinjam") {
+      path = "assets/images/dipinjam.png";
+    } else if (img == "selesai"){
+      path = "assets/images/selesai.png";
+    }
+    return path;
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -161,14 +173,15 @@ class TransaksiCardList extends StatelessWidget {
             child: InkWell(
               child: Row(
                 children: [
-                  Flexible(child: Image.asset("assets/images/bukulist.png"
-                    ,
+                  Flexible(child: Image.asset(_setImageStatus(),
                     width: 100,
                     height: 100,
                   ),),
+                  SizedBox(width: 20,),
                   Flexible(child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      SizedBox(height: 10,),
                       Flexible(child: Text(peminjaman.idpeminjaman,style: TextStyle(fontWeight: FontWeight.bold),)),
                       Text(peminjaman.IdBuku),
                       Text(peminjaman.npm),
@@ -179,7 +192,7 @@ class TransaksiCardList extends StatelessWidget {
                   IconButton(onPressed: (){
 
                   },
-                    icon: Icon(Icons.qr_code_scanner),
+                    icon: Icon(Icons.qr_code_2),
                   ),
                 ],
               ),

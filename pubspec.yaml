@@ -75,7 +75,9 @@ flutter:
       - assets/images/background.png
       - assets/images/bukulist.png
       - assets/images/pria.png
-      - assets/images/wanita.png
+      - assets/images/dipesan.png
+      - assets/images/dipinjam.png
+      - assets/images/selesai.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
