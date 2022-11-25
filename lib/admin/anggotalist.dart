@@ -176,10 +176,15 @@ class AnggotaCardList extends StatelessWidget {
         child: InkWell(
           child: Row(
             children: [
-              Flexible(child: Image.asset(_setImageUser()
-                , width: 100,
-                height: 100,
-              ),),
+              Flexible(child:
+              Padding(
+                padding: EdgeInsets.all(5),
+                child: Image.asset(_setImageUser()
+                  ,
+                  width: 100,
+                  height: 100,
+                ),
+              )),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

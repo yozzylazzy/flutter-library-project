@@ -225,7 +225,8 @@ class _HomeLibraryState extends State<HomeLibrary> {
               },
               child: Column(
                   children: [
-                    Image.asset('assets/images/user.jpg'),
+                    Image.asset('assets/images/user.jpg',
+                    ),
                     SizedBox(height: 10,),
                     Expanded(
                       flex: 1,

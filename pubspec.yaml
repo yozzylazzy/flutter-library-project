@@ -45,6 +45,7 @@ dependencies:
   animate_gradient: ^0.0.2
   flutter_screenutil: ^5.6.0
   qr_flutter: ^4.0.0
+  qr_code_scanner: ^1.0.1
 
 dev_dependencies:
   flutter_test:
@@ -78,6 +79,10 @@ flutter:
       - assets/images/dipesan.png
       - assets/images/dipinjam.png
       - assets/images/selesai.png
+      - assets/images/books/bukuajar.png
+      - assets/images/books/bukubacaan.png
+      - assets/images/books/skripsi.png
+      - assets/images/books/thesis.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

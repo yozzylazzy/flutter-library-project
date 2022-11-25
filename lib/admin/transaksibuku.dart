@@ -173,10 +173,14 @@ class TransaksiCardList extends StatelessWidget {
             child: InkWell(
               child: Row(
                 children: [
-                  Flexible(child: Image.asset(_setImageStatus(),
-                    width: 100,
-                    height: 100,
-                  ),),
+                  Flexible(child:
+                  Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Image.asset(_setImageStatus(),
+                      width: 100,
+                      height: 100,
+                    ),
+                  )),
                   SizedBox(width: 20,),
                   Flexible(child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

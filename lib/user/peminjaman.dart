@@ -11,14 +11,29 @@ import 'package:uas_2020130002/user/detailpinjamqr.dart';
 import '../controller/bukuController.dart';
 import '../model/bukumodel.dart';
 
-class WishlistBook extends StatelessWidget {
+class WishlistBook extends StatefulWidget {
   // const WishlistBook({Key? key}) : super(key: key);
   WishlistBook(this.useruid);
   final String useruid;
+
+  @override
+  State<WishlistBook> createState() => _WishlistBookState(useruid);
+}
+
+class _WishlistBookState extends State<WishlistBook> {
   late TransaksiController repository = new TransaksiController();
+  final String useruid;
+  _WishlistBookState(this.useruid);
 
   final CollectionReference collectionReference =
   FirebaseFirestore.instance.collection('anggota');
+  String idmember='';
+
+  @override
+  void initState(){
+    super.initState();
+    getUserNPM(useruid);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +103,7 @@ class WishlistBook extends StatelessWidget {
                         Container(
                           margin: const EdgeInsets.symmetric(vertical: 20.0),
                           height: 200.0,
-                          child: Text("Hi"),
+                          child: Text(idmember),
                         ),
                       ]),),
               ]),
@@ -113,25 +128,26 @@ class WishlistBook extends StatelessWidget {
           ),
           SizedBox(height: 20,),
           bookCard(),
+          SizedBox(height: 20,),
         ]),
     );
   }
 
-  String getUserNPM(String userid)  {
+  Future<void> getUserNPM(String userid) async {
     DocumentReference documentReference = collectionReference.doc(userid);
-    String npm = ' ';
-    documentReference.get().then((snapshot) {
+    String npm = '';
+    await documentReference.get().then((snapshot) {
       npm = snapshot['npm'];
-      print(npm);
+      setState(() {
+        idmember = npm;
+      });
     });
-    //debugPrint(npm);
-    return npm;
   }
 
   Widget bookCard(){
     return Padding(padding: EdgeInsets.only(left: 20, right: 20),
       child: SizedBox(child: StreamBuilder(
-          stream: repository.getPesananPengguna(getUserNPM(useruid)),
+          stream: repository.getPesananPengguna(idmember),
           builder: (BuildContext context, AsyncSnapshot  snapshot) {
             if (!snapshot.hasData) {
               return Center(child: const Text('Mohon Tunggu Sebentar...'));

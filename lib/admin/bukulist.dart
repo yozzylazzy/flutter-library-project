@@ -151,6 +151,23 @@ class BukuCardList extends StatelessWidget {
   final BukuController repository = new BukuController();
   BukuCardList({Key? key, required this.buku}) : super(key: key);
 
+  String _setBukuImg(){
+    String img = "${buku.jenisbuku}";
+    String path = "";
+    if(img == "Buku Ajar") {
+      path = "assets/images/books/bukuajar.png";
+    } else if(img == "Buku Bacaan") {
+      path = "assets/images/books/bukubacaan.png";
+    } else if (img == "Skripsi"){
+      path = "assets/images/books/skripsi.png";
+    } else if (img == "Thesis"){
+      path = "assets/images/books/thesis.png";
+    } else {
+      path = "assets/images/bukulist.png";
+    }
+    return path;
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -162,14 +179,19 @@ class BukuCardList extends StatelessWidget {
           child: InkWell(
             child: Row(
               children: [
-                Flexible(child: Image.asset("assets/images/bukulist.png"
+                Flexible(child: 
+                Padding(
+                  padding: EdgeInsets.all(10),
+                child: Image.asset(_setBukuImg()
                   ,
                   width: 100,
                   height: 100,
-                ),),
+                ),
+                )),
                 Flexible(child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    SizedBox(height: 10,),
                     Flexible(child: Text(buku.title,style: TextStyle(fontWeight: FontWeight.bold),)),
                     Text(buku.jenisbuku),
                     Text(buku.tahunTerbit),
