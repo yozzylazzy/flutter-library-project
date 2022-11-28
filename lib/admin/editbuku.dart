@@ -4,10 +4,8 @@ import 'package:uas_2020130002/controller/bukuController.dart';
 import '../model/bukumodel.dart';
 
 class EditBuku extends StatelessWidget {
-
   BukuController repositorybuku = BukuController();
   final Buku buku;
-
   EditBuku({Key? key, required this.buku}) : super(key: key);
 
   @override

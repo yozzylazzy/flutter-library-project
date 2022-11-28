@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:uas_2020130002/controller/bukuController.dart';
+import 'package:uas_2020130002/controller/transaksiController.dart';
+import 'package:uas_2020130002/model/peminjaman.dart';
+
+import '../model/bukumodel.dart';
 
 class DetailPeminjaman extends StatelessWidget {
-  const DetailPeminjaman({Key? key}) : super(key: key);
+  final String bukuid, memberid;
+  DetailPeminjaman({Key? key, required this.bukuid, required this.memberid}) : super(key: key);
+
+  late BukuController repositorybuku = new BukuController();
+  late TransaksiController repositorypinjam = new TransaksiController();
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +20,13 @@ class DetailPeminjaman extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: Colors.deepPurple,
-        onPressed: (){},
+        onPressed: (){
+          Navigator.pop(context);
+          // Peminjaman = new Peminjaman(inputId.text, judulBuku.text,
+          //     pengarang.text, jenisBuku.text,
+          //     tahunTerbit.text, halaman);
+          // repositorypinjam.addTransaksi(buku);
+        },
         icon : Icon(Icons.bookmark_add),
         label: Text("PINJAM BUKU"),
       ),
@@ -25,49 +40,99 @@ class DetailPeminjaman extends StatelessWidget {
             ),
             SizedBox(height: 120,),
             Container(
+                child:
+              StreamBuilder(
+                  stream: repositorybuku.getSatuBuku(bukuid),
+                  builder: (BuildContext context, AsyncSnapshot  snapshot) {
+                    if (!snapshot.hasData) {
+                      return LinearProgressIndicator();
+                    }
+                    return detailBuku(context,snapshot);
+                  })
+              // child: detailBuku(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget detailBuku(BuildContext context, AsyncSnapshot snapshot){
+    return Column(
+      children: [
+        Align(
+          child: Text(
+            snapshot.data.docs[0]['JudulBuku'], style: TextStyle(
+            fontFamily: 'Montserrat',
+            fontWeight: FontWeight.w900,
+            fontSize: 20,
+          ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+        SizedBox(height: 35,),
+        Padding(padding: EdgeInsets.only(left: 30, right: 30),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              "Deskripsi Buku", style: TextStyle(
+              fontWeight: FontWeight.w700,
+              fontFamily: 'Montserrat',
+              fontSize: 15,
+            ),
+              textAlign: TextAlign.left,
+            ),
+          ),),
+        SizedBox(height: 2,),
+        Padding(padding: EdgeInsets.only(left: 30, right: 30),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              bukuid, style: TextStyle(
+              fontFamily: 'Montserrat',
+              fontSize: 15,
+            ),
+              textAlign: TextAlign.left,
+            ),
+          ),),
+        SizedBox(height: 15,),
+        Padding(padding: EdgeInsets.only(left: 30, right: 30),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              "Pengarang Buku", style: TextStyle(
+              fontFamily: 'Montserrat',fontWeight: FontWeight.w700,
+              fontSize: 15,
+            ),
+              textAlign: TextAlign.left,
+            ),
+          ),),
+        SizedBox(height: 2,),
+        Padding(padding: EdgeInsets.only(left: 30, right: 30),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              snapshot.data.docs[0]['Pengarang'], style: TextStyle(
+              fontFamily: 'Montserrat',
+              fontSize: 15,
+            ),
+              textAlign: TextAlign.left,
+            ),
+          ),),
+        SizedBox(height: 15,),
+        Padding(padding: EdgeInsets.only(left: 30, right: 30),
+          child: Divider(height: 2,color: Colors.grey,),),
+        SizedBox(height: 15,),
+        Row(
+          children: [
+            Flexible(
               child: Column(
                 children: [
-                  Align(
-                    child: Text(
-                      "INI JUDUL BUKU", style: TextStyle(
-                      fontFamily: 'Montserrat',
-                      fontWeight: FontWeight.w900,
-                      fontSize: 20,
-                    ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  SizedBox(height: 35,),
-                  Padding(padding: EdgeInsets.only(left: 30, right: 30),
-                    child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Deskripsi Buku", style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontFamily: 'Montserrat',
-                      fontSize: 15,
-                    ),
-                      textAlign: TextAlign.left,
-                    ),
-                  ),),
-                  SizedBox(height: 2,),
                   Padding(padding: EdgeInsets.only(left: 30, right: 30),
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "Abcdsawk aWdaskdwk Adskawdak", style: TextStyle(
-                        fontFamily: 'Montserrat',
-                        fontSize: 15,
-                      ),
-                        textAlign: TextAlign.left,
-                      ),
-                    ),),
-                  SizedBox(height: 15,),
-                  Padding(padding: EdgeInsets.only(left: 30, right: 30),
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        "Pengarang Buku", style: TextStyle(
+                        "Tahun Terbit Buku", style: TextStyle(
                         fontFamily: 'Montserrat',fontWeight: FontWeight.w700,
                         fontSize: 15,
                       ),
@@ -79,7 +144,7 @@ class DetailPeminjaman extends StatelessWidget {
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "Budi Santoso Gunawan", style: TextStyle(
+                        snapshot.data.docs[0]['TahunTerbit'], style: TextStyle(
                         fontFamily: 'Montserrat',
                         fontSize: 15,
                       ),
@@ -87,79 +152,42 @@ class DetailPeminjaman extends StatelessWidget {
                       ),
                     ),),
                   SizedBox(height: 15,),
+                ],
+              ),
+            ),
+            Flexible(
+              child: Column(
+                children: [
                   Padding(padding: EdgeInsets.only(left: 30, right: 30),
-                    child: Divider(height: 2,color: Colors.grey,),),
-                  SizedBox(height: 15,),
-                  Row(
-                    children: [
-                      Flexible(
-                          child: Column(
-                            children: [
-                              Padding(padding: EdgeInsets.only(left: 30, right: 30),
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    "Tahun Terbit Buku", style: TextStyle(
-                                    fontFamily: 'Montserrat',fontWeight: FontWeight.w700,
-                                    fontSize: 15,
-                                  ),
-                                    textAlign: TextAlign.left,
-                                  ),
-                                ),),
-                              SizedBox(height: 2,),
-                              Padding(padding: EdgeInsets.only(left: 30, right: 30),
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    "2022", style: TextStyle(
-                                    fontFamily: 'Montserrat',
-                                    fontSize: 15,
-                                  ),
-                                    textAlign: TextAlign.left,
-                                  ),
-                                ),),
-                              SizedBox(height: 15,),
-                            ],
-                          ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Halaman Buku", style: TextStyle(
+                        fontFamily: 'Montserrat',fontWeight: FontWeight.w700,
+                        fontSize: 15,
                       ),
-                      Flexible(
-                        child: Column(
-                          children: [
-                            Padding(padding: EdgeInsets.only(left: 30, right: 30),
-                              child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  "Halaman Buku", style: TextStyle(
-                                  fontFamily: 'Montserrat',fontWeight: FontWeight.w700,
-                                  fontSize: 15,
-                                ),
-                                  textAlign: TextAlign.left,
-                                ),
-                              ),),
-                            SizedBox(height: 2,),
-                            Padding(padding: EdgeInsets.only(left: 30, right: 30),
-                              child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  "100", style: TextStyle(
-                                  fontFamily: 'Montserrat',
-                                  fontSize: 15,
-                                ),
-                                  textAlign: TextAlign.left,
-                                ),
-                              ),),
-                            SizedBox(height: 15,),
-                          ],
-                        ),
-                      )
-                    ],
-                  )
+                        textAlign: TextAlign.left,
+                      ),
+                    ),),
+                  SizedBox(height: 2,),
+                  Padding(padding: EdgeInsets.only(left: 30, right: 30),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        snapshot.data.docs[0]['halaman'].toString(), style: TextStyle(
+                        fontFamily: 'Montserrat',
+                        fontSize: 15,
+                      ),
+                        textAlign: TextAlign.left,
+                      ),
+                    ),),
+                  SizedBox(height: 15,),
                 ],
               ),
             )
           ],
-        ),
-      ),
+        )
+      ],
     );
   }
 

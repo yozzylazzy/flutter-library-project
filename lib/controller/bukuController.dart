@@ -28,5 +28,10 @@ class BukuController{
   void updateBuku(Buku buku) async {
     await collectionReference.doc(buku.referenceId).update(buku.toJson());
   }
+
+  Stream<QuerySnapshot> getSatuBuku(String id){
+    return collectionReference.where("IdBuku", isEqualTo: id).snapshots();
+  }
+
 }
 
