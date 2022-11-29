@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:uas_2020130002/user/QrPinjamBuku.dart';
 
+import '../model/peminjaman.dart';
+
 
 class DetailPinjamAmbil extends StatelessWidget {
-  const DetailPinjamAmbil({Key? key}) : super(key: key);
+  final Peminjaman peminjaman;
+  DetailPinjamAmbil({Key? key, required this.peminjaman}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +18,7 @@ class DetailPinjamAmbil extends StatelessWidget {
         backgroundColor: Colors.deepPurple,
         onPressed: (){
           Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return QrCodePinjam();
+          return QrCodePinjam(peminjaman: peminjaman,);
           }));
         },
         icon : Icon(Icons.qr_code_2),
@@ -61,7 +64,7 @@ class DetailPinjamAmbil extends StatelessWidget {
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "Abcdsawk aWdaskdwk Adskawdak", style: TextStyle(
+                        peminjaman.idpeminjaman, style: TextStyle(
                         fontFamily: 'Montserrat',
                         fontSize: 15,
                       ),
@@ -85,7 +88,7 @@ class DetailPinjamAmbil extends StatelessWidget {
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "Budi Santoso Gunawan", style: TextStyle(
+                        peminjaman.status, style: TextStyle(
                         fontFamily: 'Montserrat',
                         fontSize: 15,
                       ),

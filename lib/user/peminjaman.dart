@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:uas_2020130002/controller/transaksiController.dart';
+import 'package:uas_2020130002/model/peminjaman.dart';
 import 'package:uas_2020130002/user/detailbuku.dart';
 import 'package:uas_2020130002/user/detailpeminjaman.dart';
 import 'package:uas_2020130002/user/detailpinjamqr.dart';
@@ -160,18 +161,23 @@ class _WishlistBookState extends State<WishlistBook> {
               primary: false,
               crossAxisCount: 1,
               itemBuilder: (BuildContext context, int index) {
-                return BookCard(context, snapshot.data.docs[index]['IDTransaksi'],
-                    snapshot.data.docs[index]['IdBuku'],
-                    snapshot.data.docs[index]['npm'].toString(),
-                    snapshot.data.docs[index]['status'],
-                    snapshot.data.docs[index]['waktupinjam'].toString());
+                Peminjaman peminjaman = new Peminjaman(snapshot.data.docs[index]['IDTransaksi'],
+                    snapshot.data.docs[index]['IdBuku'], snapshot.data.docs[index]['npm'].toString(),
+                    snapshot.data.docs[index]['waktupinjam'],  snapshot.data.docs[index]['waktupinjam']
+                    , snapshot.data.docs[index]['status']);
+                return BookCard(context, peminjaman);
+                // return BookCard(context, snapshot.data.docs[index]['IDTransaksi'],
+                //     snapshot.data.docs[index]['IdBuku'],
+                //     snapshot.data.docs[index]['npm'].toString(),
+                //     snapshot.data.docs[index]['status'],
+                //     snapshot.data.docs[index]['waktupinjam'].toString());
               },
               itemCount: snapshot.data.docs.length,
             );}
       ),),);
   }
 
-  Widget BookCard(BuildContext context, String judul, String jenisbuku, String halaman, String tahun, String pengarang){
+  Widget BookCard(BuildContext context, Peminjaman peminjaman){
     final Buku buku;
     final BukuController repository = new BukuController();
     // BookCard({Key? key, required this.buku}) : super(key: key);
@@ -193,7 +199,7 @@ class _WishlistBookState extends State<WishlistBook> {
             Navigator.push<Widget>(
               context, MaterialPageRoute(builder: (context) {
               //return DetailBuku(buku: buku);
-              return DetailPinjamAmbil();
+              return DetailPinjamAmbil(peminjaman: peminjaman,);
             }),);
           },
           child: Column(
@@ -205,7 +211,7 @@ class _WishlistBookState extends State<WishlistBook> {
                   child: Padding(
                     padding: EdgeInsets.only(left: 10,right: 10),
                     child: Text(
-                      judul,
+                      peminjaman.idpeminjaman,
                       style: TextStyle(
                         fontSize: 15,
                         color: Colors.white,
@@ -221,7 +227,7 @@ class _WishlistBookState extends State<WishlistBook> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(jenisbuku,style: TextStyle(
+                  Text(peminjaman.npm,style: TextStyle(
                     fontSize: 15,
                     color: Colors.grey,
                   ),
@@ -232,7 +238,7 @@ class _WishlistBookState extends State<WishlistBook> {
                     color: Colors.grey,
                   ),),
                   SizedBox(width: 2,),
-                  Flexible(child: Text(tahun,style: TextStyle(
+                  Flexible(child: Text(peminjaman.status,style: TextStyle(
                     fontSize: 15,
                     color: Colors.grey,
                   ),

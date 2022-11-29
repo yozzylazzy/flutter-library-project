@@ -13,12 +13,12 @@ class Peminjaman{
   Peminjaman(this.idpeminjaman, this.IdBuku, this.npm,this.waktupinjam,this.waktukembali, this.status);
 
   Peminjaman.fromJson(Map<String, dynamic> json):
-        idpeminjaman = json['IDTransaksi'],
-        IdBuku = json['IdBuku'],
-        npm = json['npm'],
-        waktupinjam = json['waktupinjam'],
-        waktukembali = json['waktukembali'],
-        status = json['status'];
+        idpeminjaman = json['IDTransaksi'] as String,
+        IdBuku = json['IdBuku'] as String,
+        npm = json['npm'] as String,
+        waktupinjam = json['waktupinjam'] as Timestamp,
+        waktukembali = json['waktukembali'] as Timestamp,
+        status = json['status'] as String;
 
   Map<String, dynamic> toJson()=>{
     'IDTransaksi': idpeminjaman,

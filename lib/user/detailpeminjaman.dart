@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:uas_2020130002/controller/bukuController.dart';
 import 'package:uas_2020130002/controller/transaksiController.dart';
@@ -21,7 +22,37 @@ class DetailPeminjaman extends StatelessWidget {
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: Colors.deepPurple,
         onPressed: (){
-          Navigator.pop(context);
+          showDialog(
+              context: context, builder: (context){
+            return AlertDialog(title: Column(
+              children: [
+                SizedBox(
+                    child: Icon(Icons.warning, color: Colors.deepPurple,size: 45,)),
+                SizedBox(height: 10,),
+                SizedBox(child: Text('KONFIRMASI PEMINJAMAN',
+                  style: TextStyle(fontFamily: 'Sono',fontWeight: FontWeight.w800),)),
+                SizedBox(height: 10,),
+                Divider(thickness: 4,color: Colors.deepPurple,
+                )
+              ],
+            ), content: Text("Konfirmasikan Bahwa Anda Akan Meminjam Buku Ini",
+                style: TextStyle(fontFamily: 'Montserrat', fontWeight:
+                FontWeight.w700)), actions: [
+              TextButton(onPressed: (){
+                Peminjaman peminjaman = new Peminjaman(
+                    "idpeminjaman", "IdBuku", "npm", Timestamp.now(), Timestamp.now(), "dipesan");
+                repositorypinjam.addTransaksi(peminjaman);
+                dialogKonfirmasi(context);
+                Navigator.of(context).pop();
+              }, child: Text("PINJAM")),
+              TextButton(onPressed: (){
+                Navigator.of(context).pop();
+              }, child: Text("BATAL")
+              ),
+            ],
+            );
+          }
+          );
           // Peminjaman = new Peminjaman(inputId.text, judulBuku.text,
           //     pengarang.text, jenisBuku.text,
           //     tahunTerbit.text, halaman);
@@ -54,6 +85,28 @@ class DetailPeminjaman extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget dialogKonfirmasi(BuildContext context){
+    return AlertDialog(title: Column(
+      children: [
+        SizedBox(
+            child: Icon(Icons.info, color: Colors.lightBlue,size: 45,)),
+        SizedBox(height: 10,),
+        SizedBox(child: Text('TELAH DIPESAN',
+          style: TextStyle(fontFamily: 'Sono',fontWeight: FontWeight.w800),)),
+        SizedBox(height: 10,),
+        Divider(thickness: 4,color: Colors.deepPurple,
+        )
+      ],
+    ), content: Text("Anda telah memesan buku ini, silahkan pinjam dalam waktu dibawah 24 jam, jika tidak pesanan akan otomatis diselesaikan",
+        style: TextStyle(fontFamily: 'Montserrat', fontWeight:
+        FontWeight.w700)), actions: [
+      TextButton(onPressed: (){
+        Navigator.of(context).pop();
+      }, child: Text("OK")),
+    ],
     );
   }
 

@@ -2,14 +2,20 @@
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:flutter/material.dart';
 
+import '../model/peminjaman.dart';
+
 class QrCodePinjam extends StatefulWidget {
-  const QrCodePinjam({Key? key}) : super(key: key);
+  final Peminjaman peminjaman;
+  QrCodePinjam({Key? key, required this.peminjaman}) : super(key: key);
 
   @override
-  State<QrCodePinjam> createState() => _QrCodePinjamState();
+  State<QrCodePinjam> createState() => _QrCodePinjamState(peminjaman);
 }
 
 class _QrCodePinjamState extends State<QrCodePinjam> {
+  _QrCodePinjamState(this.peminjaman);
+  final Peminjaman peminjaman;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,7 +32,7 @@ class _QrCodePinjamState extends State<QrCodePinjam> {
                   SizedBox(height: 20,),
                   Align(
                     child: Text(
-                      "INI JUDUL BUKU", style: TextStyle(
+                      peminjaman.idpeminjaman, style: TextStyle(
                       fontFamily: 'Montserrat',
                       fontWeight: FontWeight.w900,
                       fontSize: 20,
@@ -39,7 +45,7 @@ class _QrCodePinjamState extends State<QrCodePinjam> {
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "Nama Peminjam", style: TextStyle(
+                        "NPM Peminjam", style: TextStyle(
                         fontWeight: FontWeight.w700,
                         fontFamily: 'Montserrat',
                         fontSize: 15,
@@ -52,7 +58,7 @@ class _QrCodePinjamState extends State<QrCodePinjam> {
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "Rekswa Wasdbwb", style: TextStyle(
+                       peminjaman.npm, style: TextStyle(
                         fontFamily: 'Montserrat',
                         fontSize: 15,
                       ),
@@ -76,7 +82,7 @@ class _QrCodePinjamState extends State<QrCodePinjam> {
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        DateTime.now().toString(), style: TextStyle(
+                        peminjaman.waktupinjam!.toDate().toString(), style: TextStyle(
                         fontFamily: 'Montserrat',
                         fontSize: 15,
                       ),
@@ -96,7 +102,7 @@ class _QrCodePinjamState extends State<QrCodePinjam> {
                               child: Align(
                                 alignment: Alignment.centerLeft,
                                 child: Text(
-                                  "Tahun Terbit Buku", style: TextStyle(
+                                  "ID Buku", style: TextStyle(
                                   fontFamily: 'Montserrat',fontWeight: FontWeight.w700,
                                   fontSize: 15,
                                 ),
@@ -108,7 +114,7 @@ class _QrCodePinjamState extends State<QrCodePinjam> {
                               child: Align(
                                 alignment: Alignment.centerLeft,
                                 child: Text(
-                                  "2022", style: TextStyle(
+                                  peminjaman.IdBuku, style: TextStyle(
                                   fontFamily: 'Montserrat',
                                   fontSize: 15,
                                 ),
@@ -126,7 +132,7 @@ class _QrCodePinjamState extends State<QrCodePinjam> {
                               child: Align(
                                 alignment: Alignment.centerLeft,
                                 child: Text(
-                                  "Halaman Buku", style: TextStyle(
+                                  "Status Pinjam", style: TextStyle(
                                   fontFamily: 'Montserrat',fontWeight: FontWeight.w700,
                                   fontSize: 15,
                                 ),
@@ -138,7 +144,7 @@ class _QrCodePinjamState extends State<QrCodePinjam> {
                               child: Align(
                                 alignment: Alignment.centerLeft,
                                 child: Text(
-                                  "100", style: TextStyle(
+                                  peminjaman.status, style: TextStyle(
                                   fontFamily: 'Montserrat',
                                   fontSize: 15,
                                 ),
@@ -160,7 +166,7 @@ class _QrCodePinjamState extends State<QrCodePinjam> {
 
   Widget QrCodeGen(){
     return QrImage(
-      data: 'This QR code has an embedded image as well',
+      data: peminjaman.toJson().toString(),
       version: QrVersions.auto,
       size: 320,
       gapless: false,

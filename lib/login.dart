@@ -14,7 +14,6 @@ void main() async {
   SystemChrome.setEnabledSystemUIMode(
     SystemUiMode.edgeToEdge,);
   runApp(MyApp());
-
 }
 
 class MyApp extends StatelessWidget {
