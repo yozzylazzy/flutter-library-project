@@ -33,5 +33,17 @@ class TransaksiController{
     return collectionReference.where("npm", isEqualTo: id).where("status", isEqualTo: "dipesan").snapshots();
   }
 
+  Future<int> getJumlahPinjamanSelesai(String id) async {
+    AggregateQuerySnapshot query = await collectionReference.where("npm", isEqualTo: id).where("status", isEqualTo: "selesai").count().get();
+    int hasil = await query.count;
+    return hasil;
+  }
+
+  Future<int> getJumlahDipinjam(String id) async {
+    AggregateQuerySnapshot query = await collectionReference.where("npm", isEqualTo: id).where("status", isNotEqualTo: "selesai").count().get();
+    int hasil = await query.count;
+    return hasil;
+  }
+
 }
 

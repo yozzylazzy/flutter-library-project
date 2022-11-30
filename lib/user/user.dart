@@ -39,11 +39,46 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:uas_2020130002/controller/anggotaController.dart';
+import 'package:uas_2020130002/controller/transaksiController.dart';
+import 'package:uas_2020130002/login.dart';
+
 
 class HomeUser extends StatelessWidget {
   HomeUser(this.useruid);
   final String useruid;
-  final double circleRadius = 120.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return HomeUserContent(useruid);
+  }
+}
+
+class HomeUserContent extends StatefulWidget {
+  HomeUserContent(this.useruid);
+  final String useruid;
+
+  @override
+  State<HomeUserContent> createState() => _HomeUserContentState(useruid);
+}
+
+class _HomeUserContentState extends State<HomeUserContent> {
+  _HomeUserContentState(this.userid);
+  final String userid;
+
+  double circleRadius = 120.0;
+  CollectionReference collectionReference =
+  FirebaseFirestore.instance.collection('anggota');
+
+  String idmember='';
+  int jumlahselesai = 0; int jumlahdipinjam =0;
+  TransaksiController controllertransaksi = new TransaksiController();
+
+  @override
+  void initState() {
+    super.initState();
+    getUserNPM(userid);
+    // getjumlahSelesai();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -129,7 +164,7 @@ class HomeUser extends StatelessWidget {
                                     FutureBuilder(
                                       future:
                                       FirebaseFirestore.instance.collection('anggota').
-                                      doc(useruid).get(),
+                                      doc(widget.useruid).get(),
                                       builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot){
                                         if (snapshot.connectionState == ConnectionState.done) {
                                           Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
@@ -165,7 +200,7 @@ class HomeUser extends StatelessWidget {
                                     FutureBuilder(
                                       future:
                                       FirebaseFirestore.instance.collection('anggota').
-                                      doc(useruid).get(),
+                                      doc(widget.useruid).get(),
                                       builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot){
                                         if (snapshot.connectionState == ConnectionState.done) {
                                           Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
@@ -205,14 +240,14 @@ class HomeUser extends StatelessWidget {
                                                 children: <Widget>[
                                                   Text('TOTAL PINJAMAN', style: TextStyle( fontSize: 16.0,  color: Colors.grey, fontWeight: FontWeight.w600),),
                                                   SizedBox(height: 10,),
-                                                  Text('344', style: TextStyle( fontSize: 34.0, color: Colors.white),),
+                                                  Text(jumlahselesai.toString(), style: TextStyle( fontSize: 34.0, color: Colors.white),),
                                                 ],
                                               ),
                                               Column(
                                                 children: <Widget>[
                                                   Text('MASIH DIPINJAM', style: TextStyle( fontSize: 16.0,  color: Colors.grey, fontWeight: FontWeight.w600),),
                                                   SizedBox(height: 10,),
-                                                  Text('3', style: TextStyle( fontSize: 34.0, color: Colors.white),),
+                                                  Text(jumlahdipinjam.toString(), style: TextStyle( fontSize: 34.0, color: Colors.white),),
                                                 ],
                                               ),
                                             ],
@@ -246,12 +281,28 @@ class HomeUser extends StatelessWidget {
     );
   }
 
+  Future<void> getUserNPM(String userid) async {
+    DocumentReference documentReference = collectionReference.doc(userid);
+    String npm = '';
+    await documentReference.get().then((snapshot) {
+      npm = snapshot['npm'];
+      setState(() {
+        idmember = npm;
+      });
+    });
+    jumlahselesai = await controllertransaksi.getJumlahPinjamanSelesai(npm);
+    jumlahdipinjam = await controllertransaksi.getJumlahDipinjam(npm);
+  }
+
+  // Future<void> getjumlahSelesai() async{
+  //   jumlahselesai = await controllertransaksi.getJumlahPinjamanSelesai('20201300022');
+  // }
+
   void loadUserData(String uid) async{
      GetAnggota(uid);
   }
 
   Widget circleData(){
-
     return Container(
       height: double.infinity,
       width: double.infinity,
@@ -284,8 +335,8 @@ class HomeUser extends StatelessWidget {
                       child: Column(
                         children: <Widget>[
                           SizedBox(height: circleRadius/2,),
-                          Text('Maria Elliot', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 34.0),),
-                          Text('Albany, NewYork', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0, color: Colors.lightBlueAccent),),
+                          Text('', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 34.0),),
+                          Text('', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0, color: Colors.lightBlueAccent),),
                           SizedBox(
                             height: 30.0,
                           ),
@@ -343,5 +394,4 @@ class HomeUser extends StatelessWidget {
       ]),
     );
   }
-
 }

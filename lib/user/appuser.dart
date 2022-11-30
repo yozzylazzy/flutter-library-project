@@ -59,7 +59,7 @@ class _AppUserState extends State<AppUser> {
             child: Row(
               children: <Widget>[
                 Expanded(child:  IconButton(
-                  tooltip: 'Open navigation menu',
+                  tooltip: 'Home',
                   icon: const Icon(Icons.home),
                   onPressed: () {
                     pageController.jumpToPage(0);
@@ -67,21 +67,21 @@ class _AppUserState extends State<AppUser> {
                 ),
                 ),
                 Expanded(child:  IconButton(
-                  tooltip: 'Favorite',
+                  tooltip: 'Berlangsung',
                   icon: const Icon(Icons.book),
                     onPressed: () {
                       pageController.jumpToPage(1);
                     },
                 ),),
                 Expanded(child: IconButton(
-                  tooltip: 'Search',
+                  tooltip: 'Riwayat',
                   icon: const Icon(Icons.history),
                   onPressed: () {
                     pageController.jumpToPage(2);
                   },
                 ),),
                 Expanded(child:  IconButton(
-                  tooltip: 'Favorite',
+                  tooltip: 'User',
                   icon: const Icon(Icons.person),
                   onPressed: () {
                     pageController.jumpToPage(3);
