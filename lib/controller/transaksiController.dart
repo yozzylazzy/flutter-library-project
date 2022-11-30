@@ -30,18 +30,18 @@ class TransaksiController{
   }
 
   Stream<QuerySnapshot> getPesananPengguna(String id){
-    return collectionReference.where("npm", isEqualTo: id).where("status", isEqualTo: "dipesan").snapshots();
+    return collectionReference.where("npm", isEqualTo: id).where("status", whereIn: ["dipesan","dipinjam"]).snapshots();
   }
 
   Future<int> getJumlahPinjamanSelesai(String id) async {
     AggregateQuerySnapshot query = await collectionReference.where("npm", isEqualTo: id).where("status", isEqualTo: "selesai").count().get();
-    int hasil = await query.count;
+    int hasil = query.count;
     return hasil;
   }
 
   Future<int> getJumlahDipinjam(String id) async {
-    AggregateQuerySnapshot query = await collectionReference.where("npm", isEqualTo: id).where("status", isNotEqualTo: "selesai").count().get();
-    int hasil = await query.count;
+    AggregateQuerySnapshot query = await collectionReference.where("npm", isEqualTo: id).where("status", whereIn: ["dipesan","dipinjam"]).count().get();
+    int hasil = query.count;
     return hasil;
   }
 

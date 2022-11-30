@@ -6,12 +6,27 @@ import 'package:uas_2020130002/model/peminjaman.dart';
 
 import '../model/bukumodel.dart';
 
-class DetailPeminjaman extends StatelessWidget {
+class DetailPeminjaman extends StatefulWidget {
   final String bukuid, memberid;
   DetailPeminjaman({Key? key, required this.bukuid, required this.memberid}) : super(key: key);
 
+  @override
+  State<DetailPeminjaman> createState() => _DetailPeminjamanState();
+}
+
+class _DetailPeminjamanState extends State<DetailPeminjaman> {
   late BukuController repositorybuku = new BukuController();
+  String lastid ='';
   late TransaksiController repositorypinjam = new TransaksiController();
+  final CollectionReference collectionReference =
+  FirebaseFirestore.instance.collection('transaksi');
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setLastID();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +55,7 @@ class DetailPeminjaman extends StatelessWidget {
                 FontWeight.w700)), actions: [
               TextButton(onPressed: (){
                 Peminjaman peminjaman = new Peminjaman(
-                    "idpeminjaman", "IdBuku", "npm", Timestamp.now(), Timestamp.now(), "dipesan");
+                    "idpeminjaman", widget.bukuid, widget.memberid, Timestamp.now(), null, "dipesan");
                 repositorypinjam.addTransaksi(peminjaman);
                 dialogKonfirmasi(context);
                 Navigator.of(context).pop();
@@ -73,7 +88,7 @@ class DetailPeminjaman extends StatelessWidget {
             Container(
                 child:
               StreamBuilder(
-                  stream: repositorybuku.getSatuBuku(bukuid),
+                  stream: repositorybuku.getSatuBuku(widget.bukuid),
                   builder: (BuildContext context, AsyncSnapshot  snapshot) {
                     if (!snapshot.hasData) {
                       return LinearProgressIndicator();
@@ -87,6 +102,17 @@ class DetailPeminjaman extends StatelessWidget {
       ),
     );
   }
+
+  Future<void> setLastID() async {
+    Query<Object?> documentReference = await collectionReference.orderBy("IDTransaksi", descending: true).limit(1);
+    String id = '';
+    await documentReference.get().then((snapshot) {
+      id = snapshot.docs[0]['IDTransaksi'];
+      setState(() {
+        lastid = id;
+      });
+    });
+  }//Work
 
   Widget dialogKonfirmasi(BuildContext context){
     return AlertDialog(title: Column(
@@ -141,7 +167,7 @@ class DetailPeminjaman extends StatelessWidget {
           child: Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              bukuid, style: TextStyle(
+              widget.bukuid, style: TextStyle(
               fontFamily: 'Montserrat',
               fontSize: 15,
             ),
@@ -227,7 +253,7 @@ class DetailPeminjaman extends StatelessWidget {
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        snapshot.data.docs[0]['halaman'].toString(), style: TextStyle(
+                        lastid, style: TextStyle(
                         fontFamily: 'Montserrat',
                         fontSize: 15,
                       ),
