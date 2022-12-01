@@ -83,6 +83,9 @@ flutter:
       - assets/images/books/bukubacaan.png
       - assets/images/books/skripsi.png
       - assets/images/books/thesis.png
+      - assets/images/peminjaman.png
+      - assets/images/pengembalian.png
+      - assets/images/nodata.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

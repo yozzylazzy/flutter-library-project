@@ -42,6 +42,7 @@ class _HomeLibraryState extends State<HomeLibrary> {
   final CollectionReference collectionReference =
   FirebaseFirestore.instance.collection('anggota');
   String idmember='';
+  int totalpinjaman = 0; int pinjamanberlangsung = 0; int totalbuku =0;
 
   @override
   void initState(){
@@ -126,7 +127,7 @@ class _HomeLibraryState extends State<HomeLibrary> {
                                 color: Colors.white, fontSize: 12,
                               )),
                           Container(
-                            margin: const EdgeInsets.symmetric(vertical: 30.0,horizontal: 10.0),
+                            margin: const EdgeInsets.symmetric(vertical: 20.0,horizontal: 10.0),
                             height: 200.0,
                             child: bookHorizontalInfo(),
                           ),
@@ -299,6 +300,16 @@ class _HomeLibraryState extends State<HomeLibrary> {
       setState(() {
         idmember = npm;
       });
+       repositorytransaksi.getJumlahDipinjam(idmember).then((value) =>
+       setState((){
+         pinjamanberlangsung = value;
+       }));
+      repositorytransaksi.getJumlahPinjamanSelesai(idmember).then((value) => setState((){
+        totalpinjaman = value+pinjamanberlangsung;
+      }));
+      repository.getJumlahBuku().then((value) => setState((){
+        totalbuku = value;
+      }));
     });
   }
 
@@ -315,7 +326,7 @@ class _HomeLibraryState extends State<HomeLibrary> {
               height: 400,
               child: Card(
                   elevation: 7,
-                  color: Color(0xFF888DF2),
+                  color: Colors.deepOrange,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -327,7 +338,7 @@ class _HomeLibraryState extends State<HomeLibrary> {
                             fontFamily: 'Sono',
                             color: Colors.white, fontSize: 20,
                           )),
-                      Text("0",
+                      Text(totalpinjaman.toString(),
                           style: TextStyle(
                             fontFamily: 'Sono',
                             color: Colors.white, fontSize: 30,
@@ -348,7 +359,7 @@ class _HomeLibraryState extends State<HomeLibrary> {
               height: 400,
               child: Card(
                   elevation: 7,
-                  color: Color(0xFF888DF2),
+                  color: Colors.deepOrange,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -360,7 +371,7 @@ class _HomeLibraryState extends State<HomeLibrary> {
                             fontFamily: 'Sono',
                             color: Colors.white, fontSize: 20,
                           )),
-                      Text("3",
+                      Text(pinjamanberlangsung.toString(),
                           style: TextStyle(
                             fontFamily: 'Sono',
                             color: Colors.white, fontSize: 30,
@@ -381,7 +392,7 @@ class _HomeLibraryState extends State<HomeLibrary> {
               height: 400,
               child: Card(
                 elevation: 7,
-                color: Color(0xFF888DF2),
+                color: Colors.deepOrange,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -393,7 +404,7 @@ class _HomeLibraryState extends State<HomeLibrary> {
                             fontFamily: 'Sono',
                             color: Colors.white, fontSize: 20,
                         )),
-                    Text("131",
+                    Text(totalbuku.toString(),
                         style: TextStyle(
                           fontFamily: 'Sono',
                           color: Colors.white, fontSize: 30,

@@ -16,13 +16,13 @@ class TransaksiController{
     return collectionReference.snapshots();
   }
   void deleteTransaksi(Peminjaman peminjaman) async{
-    await collectionReference.doc(peminjaman.idpeminjaman).delete();
+    await collectionReference.doc(peminjaman.referenceId).delete();
   }
   Future<DocumentReference> addTransaksi(Peminjaman peminjaman){
     return collectionReference.add(peminjaman.toJson());
   }
   void updateTransaksi(Peminjaman peminjaman) async {
-    await collectionReference.doc(peminjaman.idpeminjaman).update(peminjaman.toJson());
+    await collectionReference.doc(peminjaman.referenceId).update(peminjaman.toJson());
   }
 
   Stream<QuerySnapshot> getTransaksiPengguna(String id){
@@ -45,5 +45,17 @@ class TransaksiController{
     return hasil;
   }
 
+  Future<bool> getValidasiBuku(String bukuid) async{
+    AggregateQuerySnapshot query = await collectionReference.where("status", whereIn: ["dipesan","dipinjam"]).
+        where("IdBuku", isEqualTo: bukuid).count().get();
+    int hasil = query.count;
+    if (hasil>0){
+      return false;
+    } else if (hasil<1){
+      return true;
+    } else {
+      return false;
+    }
+  }
 }
 

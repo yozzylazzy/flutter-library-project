@@ -15,7 +15,7 @@ class DetailPinjamAmbil extends StatelessWidget {
         backgroundColor: Color(0xFF3F0CAD),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: Color(0xFF3F0CAD),
         onPressed: (){
           Navigator.push(context, MaterialPageRoute(builder: (context) {
           return QrCodePinjam(peminjaman: peminjaman,);

@@ -10,11 +10,12 @@ class EditTransaksi extends StatefulWidget {
   EditTransaksi({Key? key, required this.peminjaman}) : super(key: key);
 
   @override
-  State<EditTransaksi> createState() => _EditTransaksiState();
+  State<EditTransaksi> createState() => _EditTransaksiState(peminjaman);
 }
 
 class _EditTransaksiState extends State<EditTransaksi> {
   late Peminjaman peminjaman;
+  _EditTransaksiState(this.peminjaman);
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +34,8 @@ class _EditTransaksiState extends State<EditTransaksi> {
             Text(peminjaman.idpeminjaman),
             Text(peminjaman.IdBuku),
             Text(peminjaman.npm),
+            Text(peminjaman.waktupinjam!.toString()),
+            Text(peminjaman.waktukembali!.toString()),
             Text(peminjaman.status),
           ],
         ),

@@ -88,24 +88,26 @@ class _WishlistBookState extends State<WishlistBook> {
                   Column(
                       children: [
                         SizedBox(height: 10,),
-                        Text("Buku Yang Sedang Dipinjam", textAlign: TextAlign.center, style:
+                        Padding(padding:EdgeInsets.only(left:5,right: 5)
+                          ,child: Text("Buku Yang Sedang Dipinjam", textAlign: TextAlign.center, style:
                         TextStyle(
                             color: Colors.white, fontSize: 25,
                             fontWeight: FontWeight.w900,
                             fontFamily: 'Montserrat'
-                        ),),
+                        ),),),
                         SizedBox(height: 5,),
-                        Text("Buku Yang Sedang Dipinjam Saat Ini",
+                        Text("Cara Melakukan Peminjaman Buku di Perpustakaan",
                             textAlign: TextAlign.left,
                             style: TextStyle(
                               fontFamily: 'Sono',
                               color: Colors.white, fontSize: 12,
                             )),
-                        Container(
-                          margin: const EdgeInsets.symmetric(vertical: 20.0),
+                        Padding(padding: EdgeInsets.all(2),
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(vertical: 5.0),
                           height: 200.0,
-                          child: Text(idmember),
-                        ),
+                          child: Image.asset("assets/images/peminjaman.png"),
+                        ),),
                       ]),),
               ]),
           ),
@@ -151,8 +153,30 @@ class _WishlistBookState extends State<WishlistBook> {
           stream: repository.getPesananPengguna(idmember),
           builder: (BuildContext context, AsyncSnapshot  snapshot) {
             if (!snapshot.hasData) {
-              return Center(child: const Text('Mohon Tunggu Sebentar...'));
+              return Center(child: LinearProgressIndicator(),);
             }
+            if(snapshot.data?.size==0){
+              return Center(
+                  child: Stack(
+                    children: [
+                      Image.asset("assets/images/nodata.png"),
+                      Center(child:  Column(
+                        children: [
+                          SizedBox(height: 330,),
+                          Text("TIDAK ADA DATA", style:
+                          TextStyle(
+                              color: Colors.deepPurple, fontSize: 32,
+                              fontWeight: FontWeight.w800,
+                              fontFamily: 'Sono'
+                          ),),
+                        ],
+                      )
+                      ),
+                    ],
+                  )
+              );
+            }
+
             return StaggeredGridView.countBuilder(
               staggeredTileBuilder: (int index) =>
                   StaggeredTile.fit(1),
@@ -163,24 +187,19 @@ class _WishlistBookState extends State<WishlistBook> {
               itemBuilder: (BuildContext context, int index) {
                 Peminjaman peminjaman = new Peminjaman(snapshot.data.docs[index]['IDTransaksi'],
                     snapshot.data.docs[index]['IdBuku'], snapshot.data.docs[index]['npm'].toString(),
-                    snapshot.data.docs[index]['waktupinjam'],  snapshot.data.docs[index]['waktupinjam']
+                    snapshot.data.docs[index]['waktupinjam'].toDate(),  snapshot.data.docs[index]['waktukembali'].toDate()
                     , snapshot.data.docs[index]['status']);
                 return BookCard(context, peminjaman);
-                // return BookCard(context, snapshot.data.docs[index]['IDTransaksi'],
-                //     snapshot.data.docs[index]['IdBuku'],
-                //     snapshot.data.docs[index]['npm'].toString(),
-                //     snapshot.data.docs[index]['status'],
-                //     snapshot.data.docs[index]['waktupinjam'].toString());
               },
               itemCount: snapshot.data.docs.length,
-            );}
+            );
+          }
       ),),);
   }
 
   Widget BookCard(BuildContext context, Peminjaman peminjaman){
     final Buku buku;
     final BukuController repository = new BukuController();
-    // BookCard({Key? key, required this.buku}) : super(key: key);
 
     return Container(
       height: 300,

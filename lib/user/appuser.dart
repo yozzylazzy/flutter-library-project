@@ -33,6 +33,14 @@ class _AppUserState extends State<AppUser> {
       // appBar: AppBar(
       //   backgroundColor: Color(0xFF3F0CAD),
       // ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: (){
+          Navigator.of(context).pop();
+        },
+        label: Text("LOGOUT"),
+        icon: Icon(Icons.logout_outlined),
+        backgroundColor: Color(0xFF3F0CAD),
+      ),
       body: PageView(
           scrollDirection: Axis.horizontal,
           controller: pageController,

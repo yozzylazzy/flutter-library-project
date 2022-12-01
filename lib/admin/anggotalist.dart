@@ -3,6 +3,7 @@ import 'package:filter_list/filter_list.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:uas_2020130002/admin/addanggota.dart';
+import 'package:uas_2020130002/admin/editanggota.dart';
 import 'package:uas_2020130002/controller/anggotaController.dart';
 import 'package:uas_2020130002/controller/bukuController.dart';
 
@@ -202,8 +203,8 @@ class AnggotaCardList extends StatelessWidget {
             ],
           ),
           onTap: (){
-            // Navigator.push<Widget>(context, MaterialPageRoute(builder:
-            //     (context)=> edit(product: product)));
+            Navigator.push<Widget>(context, MaterialPageRoute(builder:
+                (context)=> EditAnggtota(anggota: anggota)));
           },
         ),
       ),

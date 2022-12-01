@@ -21,6 +21,7 @@ class _DetailPeminjamanState extends State<DetailPeminjaman> {
   final CollectionReference collectionReference =
   FirebaseFirestore.instance.collection('transaksi');
 
+
   @override
   void initState() {
     // TODO: implement initState
@@ -35,7 +36,7 @@ class _DetailPeminjamanState extends State<DetailPeminjaman> {
         backgroundColor: Color(0xFF3F0CAD),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: Color(0xFF3F0CAD),
         onPressed: (){
           showDialog(
               context: context, builder: (context){
@@ -53,12 +54,27 @@ class _DetailPeminjamanState extends State<DetailPeminjaman> {
             ), content: Text("Konfirmasikan Bahwa Anda Akan Meminjam Buku Ini",
                 style: TextStyle(fontFamily: 'Montserrat', fontWeight:
                 FontWeight.w700)), actions: [
-              TextButton(onPressed: (){
-                Peminjaman peminjaman = new Peminjaman(
-                    "idpeminjaman", widget.bukuid, widget.memberid, Timestamp.now(), null, "dipesan");
-                repositorypinjam.addTransaksi(peminjaman);
-                dialogKonfirmasi(context);
+              TextButton(onPressed: () async {
+                String x = lastid.substring(0,2);
+                int y = int.parse(lastid.substring(2)) + 1;
+                String newId = x+y.toString();
+
+                bool bolehPinjam = false;
+
+                if(await repositorypinjam.getValidasiBuku(widget.bukuid)){
+                  if(await repositorypinjam.getJumlahDipinjam(widget.memberid)<3){
+                    Peminjaman peminjaman = new Peminjaman(
+                        newId, widget.bukuid, widget.memberid, DateTime.now(), DateTime.now(), "dipesan");
+                    repositorypinjam.addTransaksi(peminjaman);
+                    await showDialog(context: context, builder: (_) => dialogKonfirmasi(context));
+                  } else {
+                    await showDialog(context: context, builder: (_) => dialogKelebihanPinjam(context));
+                  }
+                } else {
+                  await showDialog(context: context, builder: (_) => dialogGagalPinjam(context));
+                }
                 Navigator.of(context).pop();
+
               }, child: Text("PINJAM")),
               TextButton(onPressed: (){
                 Navigator.of(context).pop();
@@ -68,10 +84,6 @@ class _DetailPeminjamanState extends State<DetailPeminjaman> {
             );
           }
           );
-          // Peminjaman = new Peminjaman(inputId.text, judulBuku.text,
-          //     pengarang.text, jenisBuku.text,
-          //     tahunTerbit.text, halaman);
-          // repositorypinjam.addTransaksi(buku);
         },
         icon : Icon(Icons.bookmark_add),
         label: Text("PINJAM BUKU"),
@@ -114,6 +126,51 @@ class _DetailPeminjamanState extends State<DetailPeminjaman> {
     });
   }//Work
 
+  Widget dialogKelebihanPinjam(BuildContext context){
+    return AlertDialog(title: Column(
+      children: [
+        SizedBox(
+            child: Icon(Icons.dangerous_outlined, color: Colors.red,size: 45,)),
+        SizedBox(height: 10,),
+        SizedBox(child: Text('GAGAL DIPESAN',
+          style: TextStyle(fontFamily: 'Sono',fontWeight: FontWeight.w800),)),
+        SizedBox(height: 10,),
+        Divider(thickness: 4,color: Colors.deepPurple,
+        )
+      ],
+    ), content: Text("Anda telah memenuhi batas maksimal meminjam buku yaitu 3, silahkan "
+        "kembalikan buku yang sedang dipinjam",
+        style: TextStyle(fontFamily: 'Montserrat', fontWeight:
+        FontWeight.w700)), actions: [
+      TextButton(onPressed: (){
+        Navigator.of(context).pop();
+      }, child: Text("OK")),
+    ],
+    );
+  }
+
+  Widget dialogGagalPinjam(BuildContext context){
+    return AlertDialog(title: Column(
+      children: [
+        SizedBox(
+            child: Icon(Icons.dangerous_outlined, color: Colors.red,size: 45,)),
+        SizedBox(height: 10,),
+        SizedBox(child: Text('GAGAL DIPESAN',
+          style: TextStyle(fontFamily: 'Sono',fontWeight: FontWeight.w800),)),
+        SizedBox(height: 10,),
+        Divider(thickness: 4,color: Colors.deepPurple,
+        )
+      ],
+    ), content: Text("Buku masih dipinjam oleh orang lain, silahkan tunggu hingga ia selesai meminjam",
+        style: TextStyle(fontFamily: 'Montserrat', fontWeight:
+        FontWeight.w700)), actions: [
+      TextButton(onPressed: (){
+        Navigator.of(context).pop();
+      }, child: Text("OK")),
+    ],
+    );
+  }
+
   Widget dialogKonfirmasi(BuildContext context){
     return AlertDialog(title: Column(
       children: [
@@ -155,6 +212,34 @@ class _DetailPeminjamanState extends State<DetailPeminjaman> {
             alignment: Alignment.centerLeft,
             child: Text(
               "Deskripsi Buku", style: TextStyle(
+              fontWeight: FontWeight.w700,
+              fontFamily: 'Montserrat',
+              fontSize: 15,
+            ),
+              textAlign: TextAlign.left,
+            ),
+          ),),
+        SizedBox(height: 2,),
+        Padding(padding: EdgeInsets.only(left: 30, right: 30),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              widget.bukuid, style: TextStyle(
+              fontFamily: 'Montserrat',
+              fontSize: 15,
+            ),
+              textAlign: TextAlign.left,
+            ),
+          ),),
+        SizedBox(height: 15,),
+        Padding(padding: EdgeInsets.only(left: 30, right: 30),
+          child: Divider(height: 2,color: Colors.grey,),),
+        SizedBox(height: 15,),
+        Padding(padding: EdgeInsets.only(left: 30, right: 30),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              "ID Buku", style: TextStyle(
               fontWeight: FontWeight.w700,
               fontFamily: 'Montserrat',
               fontSize: 15,
@@ -253,7 +338,7 @@ class _DetailPeminjamanState extends State<DetailPeminjaman> {
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        lastid, style: TextStyle(
+                        snapshot.data.docs[0]['halaman'].toString(), style: TextStyle(
                         fontFamily: 'Montserrat',
                         fontSize: 15,
                       ),

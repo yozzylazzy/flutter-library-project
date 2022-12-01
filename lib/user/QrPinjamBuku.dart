@@ -1,4 +1,6 @@
 
+import 'dart:convert';
+
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:flutter/material.dart';
 
@@ -82,7 +84,7 @@ class _QrCodePinjamState extends State<QrCodePinjam> {
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        peminjaman.waktupinjam!.toDate().toString(), style: TextStyle(
+                        peminjaman.waktupinjam!.toString(), style: TextStyle(
                         fontFamily: 'Montserrat',
                         fontSize: 15,
                       ),
@@ -166,7 +168,7 @@ class _QrCodePinjamState extends State<QrCodePinjam> {
 
   Widget QrCodeGen(){
     return QrImage(
-      data: peminjaman.toJson().toString(),
+      data: jsonEncode(peminjaman.toQRJson()),
       version: QrVersions.auto,
       size: 320,
       gapless: false,

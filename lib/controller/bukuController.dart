@@ -33,5 +33,11 @@ class BukuController{
     return collectionReference.where("IdBuku", isEqualTo: id).snapshots();
   }
 
+  Future<int> getJumlahBuku() async {
+    AggregateQuerySnapshot query = await collectionReference.count().get();
+    int hasil = query.count;
+    return hasil;
+  }
+
 }
 

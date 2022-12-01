@@ -95,17 +95,18 @@ class _HistoryPageState extends State<HistoryPage> {
                               fontFamily: 'Montserrat',
                             ),),
                             SizedBox(height: 5,),
-                            Text("Buku Yang Selesai Dipinjam Baru-Baru Ini",
+                            Text("Cara Melakukan Pengembalian Buku di Perpustakaan",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontFamily: 'Sono',
                                   color: Colors.white, fontSize: 12,
                                 )),
-                            Container(
-                              margin: const EdgeInsets.symmetric(vertical: 20.0),
-                              height: 200.0,
-                              child:   Text(idmember),
-                            ),
+                            Padding(padding: EdgeInsets.all(2),
+                              child: Container(
+                                margin: const EdgeInsets.symmetric(vertical: 5.0),
+                                height: 200.0,
+                                child: Image.asset("assets/images/pengembalian.png"),
+                              ),),
                           ]),),
                   ]),
             ),
@@ -152,7 +153,28 @@ class _HistoryPageState extends State<HistoryPage> {
           stream: repository.getTransaksiPengguna(idmember),
           builder: (BuildContext context, AsyncSnapshot  snapshot) {
             if (!snapshot.hasData) {
-              return Center(child: const Text('Mohon Tunggu Sebentar...'));
+              return Center(child: LinearProgressIndicator(),);
+            }
+            if(snapshot.data?.size==0){
+              return Center(
+                  child: Stack(
+                    children: [
+                      Image.asset("assets/images/nodata.png"),
+                      Center(child:  Column(
+                        children: [
+                          SizedBox(height: 330,),
+                          Text("TIDAK ADA DATA", style:
+                          TextStyle(
+                              color: Colors.deepPurple, fontSize: 32,
+                              fontWeight: FontWeight.w800,
+                              fontFamily: 'Sono'
+                          ),),
+                        ],
+                      )
+                      ),
+                    ],
+                  )
+              );
             }
             return StaggeredGridView.countBuilder(
               staggeredTileBuilder: (int index) =>
@@ -169,7 +191,9 @@ class _HistoryPageState extends State<HistoryPage> {
                     snapshot.data.docs[index]['waktupinjam'].toString());
               },
               itemCount: snapshot.data.docs.length,
-            );}
+            );
+
+          }
       ),),);
   }
 
