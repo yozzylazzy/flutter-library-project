@@ -16,6 +16,7 @@ class EditAnggtota extends StatefulWidget {
 }
 
 class _EditAnggtotaState extends State<EditAnggtota> {
+  final GlobalKey<FormFieldState> _dropkey = GlobalKey<FormFieldState>();
   final TextEditingController password = TextEditingController();
   final TextEditingController passwordre = TextEditingController();
   final TextEditingController npm = TextEditingController();
@@ -28,7 +29,7 @@ class _EditAnggtotaState extends State<EditAnggtota> {
 
   AnggotaController repository = AnggotaController();
 
-  late Anggota anggota;
+  final Anggota anggota;
   _EditAnggtotaState(this.anggota);
 
   @override
@@ -42,6 +43,9 @@ class _EditAnggtotaState extends State<EditAnggtota> {
     npm.text = anggota.npm;
     nama.text = anggota.nama;
     _gender = anggota.gender;
+    // _dropkey.currentState!.setState(() {
+    //   selectedJenjang = anggota.jenjang;
+    // });
     selectedJenjang = anggota.jenjang;
     alamat.text = anggota.alamat;
     tglmasuk.text = anggota.tglmasuk;
@@ -50,6 +54,45 @@ class _EditAnggtotaState extends State<EditAnggtota> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          showDialog(context: context, builder: (context)
+          {
+            return AlertDialog(title: Column(
+              children: [
+                SizedBox(
+                    child: Icon(Icons.dangerous, color: Colors.red, size: 45,)),
+                SizedBox(height: 10,),
+                SizedBox(child: Text('INGIN MENGHAPUS ${anggota.nama} ?',
+                  style: TextStyle(
+                      fontFamily: 'Sono', fontWeight: FontWeight.w800),)),
+                SizedBox(height: 10,),
+                Divider(thickness: 4, color: Colors.deepPurple,
+                )
+              ],
+            ),
+              content: Text(
+                  "jadi selesai",
+                  style: TextStyle(fontFamily: 'Montserrat', fontWeight:
+                  FontWeight.w700)),
+              actions: [
+                TextButton(onPressed: () async {
+                  repository.deleteAnggota(anggota);
+                  Navigator.of(context).pop();
+                  Navigator.pop(context);
+                }, child: Text("HAPUS")),
+                TextButton(onPressed: (){
+                  Navigator.of(context).pop();
+                }, child: Text("BATAL")
+                ),
+              ],
+            );
+          });
+        },
+        icon : Icon(Icons.delete_forever_sharp),
+        label: Text("Hapus Anggota"),
+        backgroundColor: Colors.deepPurple,
+      ),
       appBar: AppBar(
         title: Text("Edit Anggota"),
         backgroundColor: Color(0xFF3F0CAD),
@@ -117,6 +160,8 @@ class _EditAnggtotaState extends State<EditAnggtota> {
                   Row(
                     children: [
                       Expanded(child: DropdownButtonFormField<String>(
+                        key: _dropkey,
+                        value: selectedJenjang,
                         isExpanded: true,
                         //controller: ,
                         validator: (value) => value ==null ? 'Pilih Jenjang Pendidikan' : null,
@@ -167,20 +212,13 @@ class _EditAnggtotaState extends State<EditAnggtota> {
                             height: 40,
                             width: 100,
                             child: ElevatedButton(onPressed: () async {
-                              String email = npm.text + "@co.id";
-                              String passworduser;
-                              if(password.text == passwordre.text){
-                                passworduser = password.text;
-                                UserCredential result = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: passworduser);
-                                User? user = result.user;
-                                anggota = new Anggota(npm.text, nama.text, alamat.text, selectedJenjang.toString(), tglmasuk.text,_gender.toString());
-                                Map<String, dynamic> anggotaData = anggota.toJson();
-                                await FirebaseFirestore.instance.collection('anggota')
-                                    .doc(user?.uid).set(anggotaData);
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(const
-                                SnackBar(content: Text("Password Tidak Sama")));
-                              }
+                                anggota.nama = nama.text;
+                                anggota.alamat = alamat.text;
+                                anggota.gender = _gender!.toString();
+                                anggota.jenjang = selectedJenjang.toString();
+                                anggota.tglmasuk = tglmasuk.text;
+                                repository.updateAnggota(anggota);
+                                Navigator.pop(context);
                               //Navigator.pop(context);
                               // int halaman = 100;
                               // Navigator.pop(context);
@@ -188,7 +226,7 @@ class _EditAnggtotaState extends State<EditAnggtota> {
                               //     pengarang.text, jenisBuku.text,
                               //     tahunTerbit.text, halaman);
                               // repository.addBuku(buku);
-                            }, child: Text("Tambah"),
+                            }, child: Text("UBAH"),
                               style: ElevatedButton.styleFrom(
                                 primary: Colors.black,
                               ),))),
@@ -198,7 +236,7 @@ class _EditAnggtotaState extends State<EditAnggtota> {
                             height: 40,
                             width: 100,
                             child: ElevatedButton(onPressed: (){}, child:
-                            Text("Reset"),
+                            Text("RESET"),
                               style: ElevatedButton.styleFrom(
                                 primary: Colors.grey,
                                 //fixedSize: Size(100, 50)

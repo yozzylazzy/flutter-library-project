@@ -86,6 +86,12 @@ class AnggotaController{
   Stream<QuerySnapshot> getStream(){
     return collectionReference.snapshots();
   }
+
+  Stream<QuerySnapshot> getStreamFiltered(String npm){
+    return collectionReference.where("npm", isGreaterThanOrEqualTo: npm).where(
+        "npm", isLessThan: npm + 'z').snapshots();
+  }
+
   void deleteAnggota(Anggota anggota) async{
     await collectionReference.doc(anggota.referenceId).delete();
   }

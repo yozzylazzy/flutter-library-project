@@ -223,7 +223,7 @@ class _HistoryPageState extends State<HistoryPage> {
           },
           child: Column(
             children: [
-              Image.asset('assets/images/user.jpg'),
+              Image.asset('assets/images/booklib.jpg'),
               SizedBox(height: 10,),
               Expanded(
                   flex: 1,

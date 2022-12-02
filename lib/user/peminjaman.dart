@@ -149,9 +149,10 @@ class _WishlistBookState extends State<WishlistBook> {
 
   Widget bookCard(){
     return Padding(padding: EdgeInsets.only(left: 20, right: 20),
-      child: SizedBox(child: StreamBuilder(
+      child: SizedBox(
+        child: StreamBuilder(
           stream: repository.getPesananPengguna(idmember),
-          builder: (BuildContext context, AsyncSnapshot  snapshot) {
+          builder: (context, AsyncSnapshot snapshot) {
             if (!snapshot.hasData) {
               return Center(child: LinearProgressIndicator(),);
             }
@@ -176,7 +177,6 @@ class _WishlistBookState extends State<WishlistBook> {
                   )
               );
             }
-
             return StaggeredGridView.countBuilder(
               staggeredTileBuilder: (int index) =>
                   StaggeredTile.fit(1),
@@ -189,6 +189,7 @@ class _WishlistBookState extends State<WishlistBook> {
                     snapshot.data.docs[index]['IdBuku'], snapshot.data.docs[index]['npm'].toString(),
                     snapshot.data.docs[index]['waktupinjam'].toDate(),  snapshot.data.docs[index]['waktukembali'].toDate()
                     , snapshot.data.docs[index]['status']);
+                // var peminjaman = Peminjaman.fromAsyncSnapshot(snapshot.data.docs);
                 return BookCard(context, peminjaman);
               },
               itemCount: snapshot.data.docs.length,
@@ -223,7 +224,7 @@ class _WishlistBookState extends State<WishlistBook> {
           },
           child: Column(
             children: [
-              Image.asset('assets/images/user.jpg'),
+              Image.asset('assets/images/booklib.jpg'),
               SizedBox(height: 10,),
               Expanded(
                   flex: 1,

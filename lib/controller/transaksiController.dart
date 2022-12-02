@@ -15,14 +15,23 @@ class TransaksiController{
   Stream<QuerySnapshot> getStream(){
     return collectionReference.snapshots();
   }
+
+  Stream<QuerySnapshot> getStreamFiltered(String idtrans){
+    return collectionReference.where("IDTransaksi", isGreaterThanOrEqualTo: idtrans).where(
+        "IDTransaksi", isLessThan: idtrans + 'z').snapshots();
+  }
+
   void deleteTransaksi(Peminjaman peminjaman) async{
     await collectionReference.doc(peminjaman.referenceId).delete();
   }
-  Future<DocumentReference> addTransaksi(Peminjaman peminjaman){
-    return collectionReference.add(peminjaman.toJson());
+  Future<void> addTransaksi(Peminjaman peminjaman){
+    String idtrans = peminjaman.npm + peminjaman.IdBuku+peminjaman.idpeminjaman;
+    return collectionReference.doc(idtrans).set(peminjaman.toJson());
   }
   void updateTransaksi(Peminjaman peminjaman) async {
-    await collectionReference.doc(peminjaman.referenceId).update(peminjaman.toJson());
+    String idref = peminjaman.npm+peminjaman.IdBuku+peminjaman.idpeminjaman;
+    print(idref);
+    await collectionReference.doc(idref).update(peminjaman.toJson());
   }
 
   Stream<QuerySnapshot> getTransaksiPengguna(String id){
@@ -57,5 +66,10 @@ class TransaksiController{
       return false;
     }
   }
+
+  void updateTrans(Peminjaman peminjaman) async {
+    await collectionReference.doc().update(peminjaman.toJson());
+  }
+
 }
 

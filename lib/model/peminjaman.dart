@@ -12,6 +12,9 @@ class Peminjaman{
 
   Peminjaman(this.idpeminjaman, this.IdBuku, this.npm,this.waktupinjam,this.waktukembali, this.status);
 
+  // Peminjaman(this.idpeminjaman, this.IdBuku, this.npm,this.waktupinjam,this.waktukembali, this.status,
+  //     this.referenceId);
+
   Peminjaman.fromJson(Map<String, dynamic> json):
         idpeminjaman = json['IDTransaksi'] as String,
         IdBuku = json['IdBuku'] as String,
@@ -50,6 +53,12 @@ class Peminjaman{
   factory Peminjaman.fromSnapshot(DocumentSnapshot snapshot){
     final newPeminjaman = Peminjaman.fromJson(snapshot.data() as Map<String, dynamic>);
     newPeminjaman.referenceId = snapshot.reference.id;
+    return newPeminjaman;
+  }
+
+  factory Peminjaman.fromAsyncSnapshot(AsyncSnapshot snapshot){
+    final newPeminjaman = Peminjaman.fromJson(snapshot.data() as Map<String, dynamic>);
+    newPeminjaman.referenceId = snapshot.data.id;
     return newPeminjaman;
   }
 

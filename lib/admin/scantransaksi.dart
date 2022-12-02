@@ -33,8 +33,12 @@ class _QRCodeReaderState extends State<QRCodeReader> {
   Barcode? result;
   QRViewController? controller;
   Peminjaman? peminjaman;
+  String statusdb = "";
+  String documentID = "";
   String cekID = "-";
   TransaksiController repotrans = new TransaksiController();
+  final CollectionReference collectionReference =
+  FirebaseFirestore.instance.collection('transaksi');
 
   @override
   void reassemble(){
@@ -71,6 +75,17 @@ class _QRCodeReaderState extends State<QRCodeReader> {
     );
   }
 
+  Future<void> getValidasiStatusBuku(String docid) async {
+    DocumentReference documentReference = collectionReference.doc(docid);
+    String status = '';
+    await documentReference.get().then((snapshot) {
+      status = snapshot['status'];
+      setState(() {
+        statusdb = status;
+      });
+    });
+  }
+
   void _onQrViewCreated(QRViewController controller){
     setState(() => this.controller = controller);
     controller.scannedDataStream.listen((scanData) {
@@ -81,16 +96,24 @@ class _QRCodeReaderState extends State<QRCodeReader> {
         controller.pauseCamera();
         try {
           Peminjaman peminjaman = Peminjaman.fromQRJson(jsonDecode(result?.code ?? ""));
-          // if(peminjaman.status=="dipesan"){
-          //   peminjaman.status = "dipinjam";
-          // } else if (peminjaman.status=="dipinjam"){
-          //   peminjaman.status="selesai";
-          // }
-          // repotrans.updateTransaksi(peminjaman);
+          setState(() {
+            documentID = peminjaman.npm+peminjaman.IdBuku+peminjaman.idpeminjaman;
+          });
+          if(peminjaman.status=="dipesan"){
+              peminjaman.status = "dipinjam";
+              showDialog(context: context, builder: (_) => dialogUpdateStatus(context));
+          } else if (peminjaman.status=="dipinjam"){
+              peminjaman.status="selesai";
+              peminjaman.waktukembali = DateTime.now();
+              showDialog(context: context, builder: (_) => dialogUpdateKembali(context));
+          } else {
+            showDialog(context: context, builder: (_) => dialogQRTidakValid(context));
+          }
+          repotrans.updateTransaksi(peminjaman);
           ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: const Text("QR Terbaca!"))
+              SnackBar(content: Text("QR Terbaca! ${statusdb}"))
           );
-          showDialog(context: context, builder: (_) => dialogUpdateStatus(context));
+          // showDialog(context: context, builder: (_) => dialogUpdateStatus(context));
 
           // Navigator.of(context).push(MaterialPageRoute(
           //         builder: (context) =>
@@ -140,12 +163,69 @@ class _QRCodeReaderState extends State<QRCodeReader> {
         FontWeight.w700)), actions: [
       TextButton(onPressed: (){
         Navigator.of(context).pop();
-        if(peminjaman!.status=="dipesan"){
-          peminjaman!.status = "dipinjam";
-        } else if (peminjaman!.status=="dipinjam"){
-          peminjaman!.status="selesai";
-        }
-        repotrans.updateTransaksi(peminjaman!);
+        // if(peminjaman!.status=="dipesan"){
+        //   peminjaman!.status = "dipinjam";
+        // } else if (peminjaman!.status=="dipinjam"){
+        //   peminjaman!.status="selesai";
+        // }
+        // repotrans.updateTrans(peminjaman!);
+      }, child: Text("OK")),
+    ],
+    );
+  }
+
+  Widget dialogQRTidakValid(BuildContext context){
+    return AlertDialog(title: Column(
+      children: [
+        SizedBox(
+            child: Icon(Icons.dangerous, color: Colors.red,size: 45,)),
+        SizedBox(height: 10,),
+        SizedBox(child: Text('QR CODE TIDAK VALID',
+          style: TextStyle(fontFamily: 'Sono',fontWeight: FontWeight.w800),)),
+        SizedBox(height: 10,),
+        Divider(thickness: 4,color: Colors.deepPurple,
+        )
+      ],
+    ), content: Text("QR Code tidak valid atau sudah kadaluarsa, mohon perbaharui status melalui petugas"
+        " perpustakaan",
+        style: TextStyle(fontFamily: 'Montserrat', fontWeight:
+        FontWeight.w700)), actions: [
+      TextButton(onPressed: (){
+        Navigator.of(context).pop();
+        // if(peminjaman!.status=="dipesan"){
+        //   peminjaman!.status = "dipinjam";
+        // } else if (peminjaman!.status=="dipinjam"){
+        //   peminjaman!.status="selesai";
+        // }
+        // repotrans.updateTrans(peminjaman!);
+      }, child: Text("OK")),
+    ],
+    );
+  }
+
+  Widget dialogUpdateKembali(BuildContext context){
+    return AlertDialog(title: Column(
+      children: [
+        SizedBox(
+            child: Icon(Icons.check_circle, color: Colors.green,size: 45,)),
+        SizedBox(height: 10,),
+        SizedBox(child: Text('UPDATE BUKU SELESAI',
+          style: TextStyle(fontFamily: 'Sono',fontWeight: FontWeight.w800),)),
+        SizedBox(height: 10,),
+        Divider(thickness: 4,color: Colors.deepPurple,
+        )
+      ],
+    ), content: Text("Buku telah diterima oleh petugas perpustakaan dan status akan diupdate menjadi selesai",
+        style: TextStyle(fontFamily: 'Montserrat', fontWeight:
+        FontWeight.w700)), actions: [
+      TextButton(onPressed: (){
+        Navigator.of(context).pop();
+        // if(peminjaman!.status=="dipesan"){
+        //   peminjaman!.status = "dipinjam";
+        // } else if (peminjaman!.status=="dipinjam"){
+        //   peminjaman!.status="selesai";
+        // }
+        // repotrans.updateTrans(peminjaman!);
       }, child: Text("OK")),
     ],
     );
@@ -154,6 +234,7 @@ class _QRCodeReaderState extends State<QRCodeReader> {
   @override
   void initState() {
     super.initState();
+    getValidasiStatusBuku(documentID);
   }
 
   @override

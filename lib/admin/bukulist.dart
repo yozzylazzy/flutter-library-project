@@ -19,6 +19,7 @@ class _BukuListState extends State<BukuList> {
   ];
   List<String>? selectedBookList = [];
   late BukuController repository = new BukuController();
+  String judul = "";
 
   @override
   Widget build(BuildContext context) {
@@ -81,6 +82,11 @@ class _BukuListState extends State<BukuList> {
           ),
           Padding(padding: EdgeInsets.only(left: 20, right: 20),
             child:TextFormField(
+              onChanged: ((value){
+                setState(() {
+                    judul = value??"";
+                });
+              }),
             decoration: InputDecoration(
               suffixIcon: IconButton(icon : Icon(Icons.list), onPressed: _openFilterDialog,),
               labelText: "Judul Buku",
@@ -93,7 +99,7 @@ class _BukuListState extends State<BukuList> {
             ),
           ),),
           SizedBox(height: 20,),
-          Expanded(child: FullBukuList(),),
+          Expanded(child: _buildBukuHome(context),),
         ],
       )
     );
@@ -143,6 +149,37 @@ class _BukuListState extends State<BukuList> {
       }, */
     );
   }
+
+  Widget _buildBukuHome(BuildContext context) {
+    return Scaffold(
+      body: StreamBuilder<QuerySnapshot>(
+        stream: repository.getStreamFiltered(judul, selectedBookList??[" "]),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData)
+            return LinearProgressIndicator();
+          return _buildList(context, snapshot.data?.docs ?? []);
+        },
+      ),
+    );
+  }
+
+  Widget _buildList(BuildContext context, List<DocumentSnapshot>
+  snapshot) {
+    return SizedBox(
+      child: ListView(
+        padding: EdgeInsets.all(10),
+        children: snapshot.map((data) =>
+            _buildListItem(context,
+                data)).toList(),
+      ),
+    );
+  }
+
+  Widget _buildListItem(BuildContext context, DocumentSnapshot
+  snapshot) {
+    var buku = Buku.fromSnapshot(snapshot);
+    return BukuCardList(buku: buku);
+  }
 }
 
 
@@ -172,7 +209,7 @@ class BukuCardList extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: 300,
-      height: 100,
+      height: 115,
       child: Padding(
         padding: EdgeInsets.only(left: 10,right: 10),
         child: Card(
@@ -182,27 +219,40 @@ class BukuCardList extends StatelessWidget {
                 Flexible(child: 
                 Padding(
                   padding: EdgeInsets.all(10),
-                child: Image.asset(_setBukuImg()
-                  ,
+                  child: Image.asset(_setBukuImg(),
                   width: 100,
                   height: 100,
                 ),
                 )),
-                Flexible(child: Column(
+                Flexible(child :
+                SizedBox(
+                  width: 150,
+                  child:
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(height: 10,),
-                    Flexible(child: Text(buku.title,style: TextStyle(fontWeight: FontWeight.bold),)),
-                    Text(buku.jenisbuku),
-                    Text(buku.tahunTerbit),
+                    Text(buku.title,style: TextStyle(fontWeight: FontWeight.bold
+                        , fontFamily: 'Montserrat', fontSize: 15),),
+                    Text(buku.jenisbuku, style: TextStyle(fontWeight: FontWeight.w500
+                        , fontFamily: 'Montserrat')),
                   ],
-                ),),
-                Spacer(),
-                IconButton(onPressed: (){
-                  repository.deleteBuku(buku);
-                },
-                  icon: Icon(Icons.restore_from_trash_rounded),
                 ),
+                ),
+                ),
+                SizedBox(width: 5,),
+                VerticalDivider(
+                  thickness: 3,
+                  color: Colors.greenAccent,
+                ),
+                Center(
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Text(buku.tahunTerbit,style: TextStyle(fontSize: 25,
+                          fontFamily: 'Sono'),),
+                    )
+                )
               ],
             ),
             onTap: (){
@@ -216,49 +266,49 @@ class BukuCardList extends StatelessWidget {
   }
 }
 
-class FullBukuList extends StatefulWidget {
-  const FullBukuList({Key? key}) : super(key: key);
-
-  @override
-  State<FullBukuList> createState() => _FullBukuListState();
-}
-
-class _FullBukuListState extends State<FullBukuList> {
-  BukuController repository = BukuController();
-
-  @override
-  Widget build(BuildContext context) {
-    return _buildBukuHome(context);
-  }
-
-  Widget _buildBukuHome(BuildContext context) {
-    return Scaffold(
-      body: StreamBuilder<QuerySnapshot>(
-        stream: repository.getStream(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData)
-            return LinearProgressIndicator();
-          return _buildList(context, snapshot.data?.docs ?? []);
-        },
-      ),
-    );
-  }
-
-  Widget _buildList(BuildContext context, List<DocumentSnapshot>
-  snapshot) {
-    return SizedBox(
-      child: ListView(
-        padding: EdgeInsets.all(10),
-        children: snapshot.map((data) =>
-            _buildListItem(context,
-                data)).toList(),
-      ),
-    );
-  }
-
-  Widget _buildListItem(BuildContext context, DocumentSnapshot
-  snapshot) {
-    var buku = Buku.fromSnapshot(snapshot);
-    return BukuCardList(buku: buku);
-  }
-}
+// class FullBukuList extends StatefulWidget {
+//   const FullBukuList({Key? key}) : super(key: key);
+//
+//   @override
+//   State<FullBukuList> createState() => _FullBukuListState();
+// }
+//
+// class _FullBukuListState extends State<FullBukuList> {
+//   BukuController repository = BukuController();
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return _buildBukuHome(context);
+//   }
+//
+//   Widget _buildBukuHome(BuildContext context) {
+//     return Scaffold(
+//       body: StreamBuilder<QuerySnapshot>(
+//         stream: repository.getStream(),
+//         builder: (context, snapshot) {
+//           if (!snapshot.hasData)
+//             return LinearProgressIndicator();
+//           return _buildList(context, snapshot.data?.docs ?? []);
+//         },
+//       ),
+//     );
+//   }
+//
+//   Widget _buildList(BuildContext context, List<DocumentSnapshot>
+//   snapshot) {
+//     return SizedBox(
+//       child: ListView(
+//         padding: EdgeInsets.all(10),
+//         children: snapshot.map((data) =>
+//             _buildListItem(context,
+//                 data)).toList(),
+//       ),
+//     );
+//   }
+//
+//   Widget _buildListItem(BuildContext context, DocumentSnapshot
+//   snapshot) {
+//     var buku = Buku.fromSnapshot(snapshot);
+//     return BukuCardList(buku: buku);
+//   }
+// }

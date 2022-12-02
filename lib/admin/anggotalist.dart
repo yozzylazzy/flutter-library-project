@@ -22,6 +22,7 @@ class _AnggotaListState extends State<AnggotaList> {
   ];
   List<String>? selectedAnggotaList = [];
   late AnggotaController repository = new AnggotaController();
+  String npm = "";
 
   @override
   Widget build(BuildContext context) {
@@ -84,9 +85,14 @@ class _AnggotaListState extends State<AnggotaList> {
           ),
           Padding(padding: EdgeInsets.only(left: 20, right: 20),
             child:TextFormField(
+              onChanged: ((value){
+                setState(() {
+                  npm = value??"";
+                });
+              }),
               decoration: InputDecoration(
                 suffixIcon: IconButton(icon : Icon(Icons.list), onPressed: _openFilterDialog,),
-                labelText: "Nama/NPM Anggota",
+                labelText: "NPM Anggota",
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
                   borderSide: BorderSide(
@@ -97,7 +103,7 @@ class _AnggotaListState extends State<AnggotaList> {
             ),),
           SizedBox(height: 20,),
           Expanded(
-            child: FullAnggotaList()
+            child: _buildAnggotaHome(context)
             ,),
         ],
       )
@@ -148,6 +154,33 @@ class _AnggotaListState extends State<AnggotaList> {
       }, */
     );
   }
+
+  Widget _buildAnggotaHome(BuildContext context){
+    return Scaffold(
+      body: StreamBuilder<QuerySnapshot>(
+        stream: repository.getStreamFiltered(npm),
+        builder: (context, snapshot){
+          if (!snapshot.hasData)
+            return LinearProgressIndicator();
+          return _buildList(context, snapshot.data?.docs ?? []);
+        },
+      ),
+    );
+  }
+  Widget _buildList(BuildContext context, List<DocumentSnapshot>
+  snapshot) {
+    return ListView(
+      padding: EdgeInsets.all(10),
+      children: snapshot.map((data) => _buildListItem(context,
+          data)).toList(),
+    );
+  }
+  Widget _buildListItem(BuildContext context, DocumentSnapshot
+  snapshot) {
+    var anggota = Anggota.fromSnapshot(snapshot);
+    return AnggotaCardList(anggota: anggota);
+  }
+
 }
 
 class AnggotaCardList extends StatelessWidget {
@@ -186,20 +219,33 @@ class AnggotaCardList extends StatelessWidget {
                   height: 100,
                 ),
               )),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(anggota.npm,style: TextStyle(fontWeight: FontWeight.bold),),
-                  Text(anggota.nama),
-                  Text(anggota.jenjang),
-                  Spacer(),
-                  IconButton(onPressed: () async {
-                    repository.deleteAnggota(anggota);
-                  },
-                    icon: Icon(Icons.restore_from_trash_rounded),
-                  ),
-                ],
+              SizedBox(width: 20,),
+              SizedBox(
+                width: 110,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(anggota.npm,style: TextStyle(fontWeight: FontWeight.bold
+                    , fontFamily: 'Montserrat', fontSize: 15),),
+                    Text(anggota.nama, style: TextStyle(fontWeight: FontWeight.w500
+                        , fontFamily: 'Montserrat')),
+                  ],
+                ),
               ),
+              SizedBox(width: 15,),
+              VerticalDivider(
+                thickness: 3,
+                color: Colors.greenAccent,
+              ),
+              SizedBox(width: 10,),
+              Center(
+                child: Align(
+                  alignment: Alignment.center,
+                  child: Text(anggota.jenjang,style: TextStyle(fontSize: 40,
+                      fontFamily: 'Sono'),),
+                )
+              )
             ],
           ),
           onTap: (){
@@ -210,49 +256,6 @@ class AnggotaCardList extends StatelessWidget {
       ),
     ),);
   }
-}
-
-class FullAnggotaList extends StatefulWidget {
-  const FullAnggotaList({Key? key}) : super(key: key);
-
-  @override
-  State<FullAnggotaList> createState() => _FullAnggotaListState();
-}
-
-class _FullAnggotaListState extends State<FullAnggotaList> {
-  AnggotaController repository = AnggotaController();
-
-  @override
-  Widget build(BuildContext context) {
-    return _buildAnggotaHome(context);
-  }
-
-  Widget _buildAnggotaHome(BuildContext context){
-    return Scaffold(
-      body: StreamBuilder<QuerySnapshot>(
-        stream: repository.getStream(),
-        builder: (context, snapshot){
-          if (!snapshot.hasData)
-            return LinearProgressIndicator();
-          return _buildList(context, snapshot.data?.docs ?? []);
-        },
-      ),
-    );
-  }
-  Widget _buildList(BuildContext context, List<DocumentSnapshot>
-  snapshot) {
-    return ListView(
-      padding: EdgeInsets.all(10),
-      children: snapshot.map((data) => _buildListItem(context,
-          data)).toList(),
-    );
-  }
-  Widget _buildListItem(BuildContext context, DocumentSnapshot
-  snapshot) {
-    var anggota = Anggota.fromSnapshot(snapshot);
-    return AnggotaCardList(anggota: anggota);
-  }
-
 }
 
 

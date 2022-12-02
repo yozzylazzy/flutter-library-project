@@ -5,16 +5,29 @@ import 'package:uas_2020130002/controller/bukuController.dart';
 
 import '../model/bukumodel.dart';
 
-class AddBuku extends StatelessWidget {
+class AddBuku extends StatefulWidget {
+  @override
+  State<AddBuku> createState() => _AddBukuState();
+}
+
+class _AddBukuState extends State<AddBuku> {
   //const AddBuku({Key? key}) : super(key: key);
   final TextEditingController inputId = TextEditingController();
-  final TextEditingController jenisBuku = TextEditingController();
+
+  //final TextEditingController jenisBuku = TextEditingController();
+
   final TextEditingController judulBuku = TextEditingController();
+
   final TextEditingController pengarang = TextEditingController();
+
   final TextEditingController tahunTerbit = TextEditingController();
+
   final TextEditingController halaman = TextEditingController();
 
+  String selectedJenis = "";
+
   BukuController repository = BukuController();
+
   late Buku buku;
 
   @override
@@ -47,11 +60,37 @@ class AddBuku extends StatelessWidget {
                     labelText: "Judul Buku",
                   ),
                 ),
-                SizedBox(height: 20,),
-                TextFormField(
-                  controller: jenisBuku,
+                SizedBox(height: 30,),
+                // TextFormField(
+                //   controller: jenisBuku,
+                //   decoration: InputDecoration(
+                //     labelText: "Jenis Buku",
+                //   ),
+                // ),
+                DropdownButtonFormField<String>(
+                  isExpanded: true,
+                  //controller: ,
+                  validator: (value) => value ==null ? 'Pilih Jenis Buku' : null,
+                  items: <String>['Skripsi', 'Thesis', 'Buku Ajar', 'Buku Bacaan'].map((String value)
+                  {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (value){
+                    setState(() {
+                      selectedJenis = value!;
+                    });
+                  },
                   decoration: InputDecoration(
-                    labelText: "Jenis Buku",
+                    labelText: 'Pilih Jenis Buku',
+                    labelStyle: TextStyle(
+                      color: Colors.black,
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
                 ),
                 SizedBox(height: 20,),
@@ -86,13 +125,13 @@ class AddBuku extends StatelessWidget {
                           width: 100,
                           child: ElevatedButton(onPressed: (){
                         //Navigator.pop(context);
-                        int halaman = 100;
+                        int x = int.parse(halaman.text);
                         Navigator.pop(context);
                         buku = new Buku(inputId.text, judulBuku.text,
-                            pengarang.text, jenisBuku.text,
-                            tahunTerbit.text, halaman);
+                            pengarang.text, selectedJenis,
+                            tahunTerbit.text, x);
                         repository.addBuku(buku);
-                      }, child: Text("Tambah"),
+                      }, child: Text("TAMBAH"),
                         style: ElevatedButton.styleFrom(
                           primary: Colors.black,
                         ),))),
@@ -102,7 +141,7 @@ class AddBuku extends StatelessWidget {
                           height: 40,
                           width: 100,
                           child: ElevatedButton(onPressed: (){}, child:
-                      Text("Reset"),
+                      Text("RESET"),
                         style: ElevatedButton.styleFrom(
                           primary: Colors.grey,
                           //fixedSize: Size(100, 50)

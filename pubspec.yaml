@@ -86,7 +86,10 @@ flutter:
       - assets/images/peminjaman.png
       - assets/images/pengembalian.png
       - assets/images/nodata.png
-
+      - assets/images/girlhome.png
+      - assets/images/boyhome.png
+      - assets/images/notfound.png
+      - assets/images/booklib.jpg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

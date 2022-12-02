@@ -15,10 +15,11 @@ class TransaksiBukuList extends StatefulWidget {
 
 class _TransaksiBukuListState extends State<TransaksiBukuList> {
   final List<String> bookList = [
-    "Skripsi","Thesis","Buku Bacaan","Buku Ajar"
+    "dipesan","dipinjam","selesai"
   ];
   List<String>? selectedBookList = [];
   late TransaksiController repository = new TransaksiController();
+  String idtrans ="";
 
   @override
   Widget build(BuildContext context) {
@@ -80,6 +81,11 @@ class _TransaksiBukuListState extends State<TransaksiBukuList> {
           ),
           Padding(padding: EdgeInsets.only(left: 20, right: 20),
             child:TextFormField(
+              onChanged: ((value) {
+                  setState(() {
+                    idtrans = value??"";
+                  });
+              }),
               decoration: InputDecoration(
                 suffixIcon: IconButton(icon : Icon(Icons.list), onPressed: _openFilterDialog,),
                 labelText: "LIST TRANSAKSI",
@@ -92,7 +98,7 @@ class _TransaksiBukuListState extends State<TransaksiBukuList> {
               ),
             ),),
           SizedBox(height: 20,),
-          Expanded(child: FullTransaksiList(),),
+          Expanded(child: _buildTransaksiHome(context),),
         ],
       )
     );
@@ -103,7 +109,7 @@ class _TransaksiBukuListState extends State<TransaksiBukuList> {
       this.context,
       hideSelectedTextCount: true,
       themeData: FilterListThemeData(this.context),
-      headlineText: 'Pilih Jenis Buku',
+      headlineText: 'Pilih Jenis Transaksi',
       height: 500,
       listData: bookList,
       selectedListData: selectedBookList,
@@ -141,6 +147,38 @@ class _TransaksiBukuListState extends State<TransaksiBukuList> {
       }, */
     );
   }
+
+  Widget _buildTransaksiHome(BuildContext context) {
+    return Scaffold(
+      body: StreamBuilder<QuerySnapshot>(
+        stream: repository.getStreamFiltered(idtrans),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData)
+            return LinearProgressIndicator();
+          return _buildList(context, snapshot.data?.docs ?? []);
+        },
+      ),
+    );
+  }
+
+  Widget _buildList(BuildContext context, List<DocumentSnapshot>
+  snapshot) {
+    return SizedBox(
+      child: ListView(
+        padding: EdgeInsets.all(10),
+        children: snapshot.map((data) =>
+            _buildListItem(context,
+                data)).toList(),
+      ),
+    );
+  }
+
+  Widget _buildListItem(BuildContext context, DocumentSnapshot
+  snapshot) {
+    var peminjaman = Peminjaman.fromSnapshot(snapshot);
+    return TransaksiCardList(peminjaman: peminjaman);
+  }
+
 }
 
 
@@ -181,23 +219,31 @@ class TransaksiCardList extends StatelessWidget {
                       height: 100,
                     ),
                   )),
-                  SizedBox(width: 20,),
+                  SizedBox(width: 5,),
                   Flexible(child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SizedBox(height: 10,),
-                      Flexible(child: Text(peminjaman.idpeminjaman,style: TextStyle(fontWeight: FontWeight.bold),)),
-                      Text(peminjaman.IdBuku),
-                      Text(peminjaman.npm),
-                      Text(peminjaman.status),
+                      Text(peminjaman.idpeminjaman+"-"+peminjaman.IdBuku,style: TextStyle(fontWeight: FontWeight.bold
+                          , fontFamily: 'Montserrat', fontSize: 15),),
+                      Text(peminjaman.npm, style: TextStyle(fontWeight: FontWeight.w500
+                          , fontFamily: 'Montserrat')),
                     ],
-                  ),),
-                  Spacer(),
-                  IconButton(onPressed: (){
-
-                  },
-                    icon: Icon(Icons.qr_code_2),
                   ),
+                  ),
+                    SizedBox(width: 30,),
+                    VerticalDivider(
+                      thickness: 3,
+                      color: Colors.greenAccent,
+                    ),
+                    Center(
+                        child: Container(
+                          alignment: Alignment.center,
+                          child: Text(peminjaman.status,style: TextStyle(fontSize: 20,
+                              fontFamily: 'Sono'),),
+                        )
+                    )
                 ],
               ),
               onTap: (){
@@ -208,52 +254,5 @@ class TransaksiCardList extends StatelessWidget {
           ),
         )
     );
-  }
-}
-
-class FullTransaksiList extends StatefulWidget {
-  const FullTransaksiList({Key? key}) : super(key: key);
-
-  @override
-  State<FullTransaksiList> createState() => _FullTransaksiListState();
-}
-
-class _FullTransaksiListState extends State<FullTransaksiList> {
-  TransaksiController repository = TransaksiController();
-
-  @override
-  Widget build(BuildContext context) {
-    return _buildTransaksiHome(context);
-  }
-
-  Widget _buildTransaksiHome(BuildContext context) {
-    return Scaffold(
-      body: StreamBuilder<QuerySnapshot>(
-        stream: repository.getStream(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData)
-            return LinearProgressIndicator();
-          return _buildList(context, snapshot.data?.docs ?? []);
-        },
-      ),
-    );
-  }
-
-  Widget _buildList(BuildContext context, List<DocumentSnapshot>
-  snapshot) {
-    return SizedBox(
-      child: ListView(
-        padding: EdgeInsets.all(10),
-        children: snapshot.map((data) =>
-            _buildListItem(context,
-                data)).toList(),
-      ),
-    );
-  }
-
-  Widget _buildListItem(BuildContext context, DocumentSnapshot
-  snapshot) {
-    var peminjaman = Peminjaman.fromSnapshot(snapshot);
-    return TransaksiCardList(peminjaman: peminjaman);
   }
 }

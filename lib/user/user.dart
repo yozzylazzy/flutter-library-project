@@ -65,6 +65,8 @@ class _HomeUserContentState extends State<HomeUserContent> {
   _HomeUserContentState(this.userid);
   final String userid;
 
+  String gender = "";
+
   double circleRadius = 120.0;
   CollectionReference collectionReference =
   FirebaseFirestore.instance.collection('anggota');
@@ -72,6 +74,20 @@ class _HomeUserContentState extends State<HomeUserContent> {
   String idmember='';
   int jumlahselesai = 0; int jumlahdipinjam =0;
   TransaksiController controllertransaksi = new TransaksiController();
+
+  String _setImageUser(){
+    String img = gender;
+    String path = "";
+
+    if(img == "Wanita") {
+      path = "assets/images/girlhome.png";
+    } else if(img == "Pria") {
+      path = "assets/images/boyhome.png";
+    } else {
+      path = "assets/images/notfound.png";
+    }
+    return path;
+  }
 
   @override
   void initState() {
@@ -168,6 +184,7 @@ class _HomeUserContentState extends State<HomeUserContent> {
                                       builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot){
                                         if (snapshot.connectionState == ConnectionState.done) {
                                           Map<String, dynamic> data = snapshot.data!.data() as Map<String, dynamic>;
+                                          gender = data['gender'];
                                           return Text(
                                             "${data['nama']}",
                                             style: TextStyle(
@@ -268,7 +285,7 @@ class _HomeUserContentState extends State<HomeUserContent> {
                       SizedBox(height: 10,),
                       Center(
                         child: CircleAvatar(
-                          backgroundImage: AssetImage('assets/images/user.jpg'),
+                          backgroundImage: AssetImage(_setImageUser()),
                           radius: 60,
                           backgroundColor: Colors.transparent,
                         ),

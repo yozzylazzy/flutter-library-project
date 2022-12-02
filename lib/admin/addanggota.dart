@@ -170,6 +170,7 @@ class _AddAnggotaState extends State<AddAnggota> {
                             Map<String, dynamic> anggotaData = anggota.toJson();
                             await FirebaseFirestore.instance.collection('anggota')
                                 .doc(user?.uid).set(anggotaData);
+                            Navigator.pop(context);
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(const
                             SnackBar(content: Text("Password Tidak Sama")));
@@ -181,7 +182,7 @@ class _AddAnggotaState extends State<AddAnggota> {
                           //     pengarang.text, jenisBuku.text,
                           //     tahunTerbit.text, halaman);
                           // repository.addBuku(buku);
-                        }, child: Text("Tambah"),
+                        }, child: Text("TAMBAH"),
                           style: ElevatedButton.styleFrom(
                             primary: Colors.black,
                           ),))),
@@ -191,7 +192,7 @@ class _AddAnggotaState extends State<AddAnggota> {
                         height: 40,
                         width: 100,
                         child: ElevatedButton(onPressed: (){}, child:
-                        Text("Reset"),
+                        Text("RESET"),
                           style: ElevatedButton.styleFrom(
                             primary: Colors.grey,
                             //fixedSize: Size(100, 50)

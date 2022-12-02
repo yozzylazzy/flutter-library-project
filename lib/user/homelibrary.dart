@@ -43,6 +43,7 @@ class _HomeLibraryState extends State<HomeLibrary> {
   FirebaseFirestore.instance.collection('anggota');
   String idmember='';
   int totalpinjaman = 0; int pinjamanberlangsung = 0; int totalbuku =0;
+  String judulbuku ="";
 
   @override
   void initState(){
@@ -63,9 +64,6 @@ class _HomeLibraryState extends State<HomeLibrary> {
       validateSelectedItem: (list, val) => list!.contains(val),
       controlButtons: [ControlButtonType.All, ControlButtonType.Reset],
       onItemSearch: (item, query) {
-        /// When search query change in search bar then this method will be called
-        ///
-        /// Check if items contains query
         return item.toLowerCase().contains(query.toLowerCase());
       },
 
@@ -148,6 +146,11 @@ class _HomeLibraryState extends State<HomeLibrary> {
               child: Row(
                   children: [
                     Flexible(child: TextFormField(
+                      onChanged: ((value){
+                        setState(() {
+                          judulbuku = value;
+                        });
+                      }),
                       decoration: InputDecoration(
                         suffixIcon: IconButton(icon : Icon(Icons.list), onPressed: _openFilterDialog,),
                         labelText: "Judul Buku",
@@ -180,7 +183,7 @@ class _HomeLibraryState extends State<HomeLibrary> {
               Padding(padding: EdgeInsets.only(left: 20, right: 20),
               child: SizedBox(child:
               StreamBuilder(
-                  stream: repository.getStream(),
+                  stream: repository.getStreamFiltered(judulbuku,selectedBookList?? [""]),
                   builder: (BuildContext context, AsyncSnapshot  snapshot) {
                     if (!snapshot.hasData) {
                       return LinearProgressIndicator();
@@ -240,7 +243,10 @@ class _HomeLibraryState extends State<HomeLibrary> {
           },
           child: Column(
             children: [
-              Image.asset('assets/images/user.jpg',
+              SizedBox(
+                height: 100,
+                child: Image.asset('assets/images/booklib.jpg',
+              ),
               ),
               SizedBox(height: 10,),
               Expanded(

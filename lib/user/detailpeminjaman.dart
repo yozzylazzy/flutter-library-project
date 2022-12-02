@@ -16,7 +16,7 @@ class DetailPeminjaman extends StatefulWidget {
 
 class _DetailPeminjamanState extends State<DetailPeminjaman> {
   late BukuController repositorybuku = new BukuController();
-  String lastid ='';
+  String lastid ='TS0';
   late TransaksiController repositorypinjam = new TransaksiController();
   final CollectionReference collectionReference =
   FirebaseFirestore.instance.collection('transaksi');
