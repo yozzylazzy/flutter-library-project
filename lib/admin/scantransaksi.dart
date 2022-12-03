@@ -163,12 +163,6 @@ class _QRCodeReaderState extends State<QRCodeReader> {
         FontWeight.w700)), actions: [
       TextButton(onPressed: (){
         Navigator.of(context).pop();
-        // if(peminjaman!.status=="dipesan"){
-        //   peminjaman!.status = "dipinjam";
-        // } else if (peminjaman!.status=="dipinjam"){
-        //   peminjaman!.status="selesai";
-        // }
-        // repotrans.updateTrans(peminjaman!);
       }, child: Text("OK")),
     ],
     );

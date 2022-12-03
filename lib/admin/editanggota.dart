@@ -72,7 +72,7 @@ class _EditAnggtotaState extends State<EditAnggtota> {
               ],
             ),
               content: Text(
-                  "jadi selesai",
+                  "Data Anggota Telah Dihapus, SIalhkan kontak Ke Pihak IT Kami Untuk Pendaftaran Ulang",
                   style: TextStyle(fontFamily: 'Montserrat', fontWeight:
                   FontWeight.w700)),
               actions: [

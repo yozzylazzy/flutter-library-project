@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uas_2020130002/controller/transaksiController.dart';
 import 'package:uas_2020130002/user/QrPinjamBuku.dart';
 
 import '../model/peminjaman.dart';
@@ -7,6 +8,7 @@ import '../model/peminjaman.dart';
 class DetailPinjamAmbil extends StatelessWidget {
   final Peminjaman peminjaman;
   DetailPinjamAmbil({Key? key, required this.peminjaman}) : super(key: key);
+  TransaksiController repository = new TransaksiController();
 
   @override
   Widget build(BuildContext context) {
@@ -162,13 +164,88 @@ class DetailPinjamAmbil extends StatelessWidget {
                         ),
                       )
                     ],
-                  )
+                  ),
+                  SizedBox(height: 10,),
+                  Center(
+                      child: ElevatedButton(
+                      onPressed: (){
+                            showDialog(
+                            context: context, builder: (context) {
+                              return AlertDialog(title: Column(
+                                children: [
+                                  SizedBox(
+                                      child: Icon(
+                                        Icons.warning, color: Colors.red,
+                                        size: 45,)),
+                                  SizedBox(height: 10,),
+                                  SizedBox(child: Text('KONFIRMASI PEMBATALAN',
+                                    style: TextStyle(fontFamily: 'Sono',
+                                        fontWeight: FontWeight.w800),)),
+                                  SizedBox(height: 10,),
+                                  Divider(
+                                    thickness: 4, color: Colors.deepPurple,
+                                  )
+                                ],
+                              ),
+                                content: Text(
+                                    "Konfirmasikan Bahwa Anda Akan Membatalkan Pemesanan Buku Ini",
+                                    style: TextStyle(
+                                        fontFamily: 'Montserrat', fontWeight:
+                                    FontWeight.w700)),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () async {
+                                        peminjaman.referenceId =
+                                            peminjaman.npm + peminjaman.IdBuku +
+                                                peminjaman.idpeminjaman;
+                                        repository.deleteTransaksi(peminjaman);
+                                        await showDialog(context: context,
+                                            builder: (_) =>
+                                                dialogInformasiPenghapusan(
+                                                    context));
+                                        Navigator.of(context).pop();
+                                      }, child: Text("BATALKAN")),
+                                  TextButton(onPressed: () {
+                                    Navigator.of(context).pop();
+                                  }, child: Text("BATAL")
+                                  ),
+                                ],
+                              );
+                            });
+                      }, child: Text("BATALKAN PEMESANAN"),
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.red,
+                        ),)
+                  ),
                 ],
               ),
             )
           ],
         ),
       ),
+    );
+  }
+
+  Widget dialogInformasiPenghapusan(BuildContext context){
+    return AlertDialog(title: Column(
+      children: [
+        SizedBox(
+            child: Icon(Icons.info, color: Colors.blueAccent,size: 45,)),
+        SizedBox(height: 10,),
+        SizedBox(child: Text('PEMESANAN BUKU TELAH DIBATALKAN',
+          style: TextStyle(fontFamily: 'Sono',fontWeight: FontWeight.w800),)),
+        SizedBox(height: 10,),
+        Divider(thickness: 4,color: Colors.deepPurple,
+        )
+      ],
+    ), content: Text("Proses Peminjaman Buku Telah Dibatalkan, Silahkan Lakukan Peminjaman Ulang untuk Memesan",
+        style: TextStyle(fontFamily: 'Montserrat', fontWeight:
+        FontWeight.w700)), actions: [
+      TextButton(onPressed: (){
+        Navigator.pop(context);
+        Navigator.of(context).pop();
+      }, child: Text("OK")),
+    ],
     );
   }
 

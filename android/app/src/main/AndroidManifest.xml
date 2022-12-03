@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.uas_2020130002">
    <application
-        android:label="uas_2020130002"
+        android:label="M_Library_Likmi"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
