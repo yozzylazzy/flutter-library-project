@@ -180,7 +180,6 @@ class _AnggotaListState extends State<AnggotaList> {
     var anggota = Anggota.fromSnapshot(snapshot);
     return AnggotaCardList(anggota: anggota);
   }
-
 }
 
 class AnggotaCardList extends StatelessWidget {
